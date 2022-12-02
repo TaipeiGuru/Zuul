@@ -20,6 +20,7 @@ ArrayList<Item> inventory = new ArrayList<Item>();
 
 // Main method
 int main() {
+	char input[10];
 	createRooms();
 	printWelcome();
 
@@ -28,127 +29,129 @@ int main() {
 
 	bool finished = false;
 	while (finished == false) {
-			Command command = parser.getCommand();
-			finished = processCommand(command);
+		cout << "Your commands are \"go\", \"quit\", \"inventory\", \"get\", \"drop\", and \"help\"." << endl; 
+		cin >> input;
+		cin.clear();
+		cin.ignore(10000, '\n');
+		if (strcmp(input, "help") == 0) {
+    	printHelp();
+		} else if (commandWord.equals("go")) {
+			cout << "Which direction (\"east\", \"south\", \"west\", \"north\") do you want to go?" << endl;	
+			cin >> input;
+			cin.clear();
+			cin.ignore(10000, '\n');
+			goRoom(input);
+		} else if (commandWord.equals("quit")) {
+			finished = true;
+		} else if (commandWord.equals("inventory")) {
+			printInventory();
+		} else if (commandWord.equals("get")) {
+			cout << "Which item do you want to get?" << endl;	
+			cin.get(input, 50);
+			cin.clear();
+			cin.ignore(10000, '\n');
+			getItem(input);
+		} else if (commandWord.equals("drop")) {
+			cout << "Which item do you want to drop?" << endl;	
+			cin.get(input, 50);
+			cin.clear();
+			cin.ignore(10000, '\n');
+			dropItem(input);
+		}
 	}
-	System.out.println("Thank you for playing. Good bye.");
+	cout << "Thank you for playing. Good bye." << endl;
 }
 
-/**
-* Create all the rooms and link their exits together.
-*/
-private void createRooms()
-{
+// Create all the rooms and link their exits together.
+private void createRooms() {
 
-// create the rooms and their descriptions 
-Outside = new Room("outside the entrance to the castle");
-EntryHall = new Room("in the entry hall of the castle. Are those guards carrying swords?");
-EastBalcony = new Room("on the East Balcony, the eastern part of the balcony overlooking the valley");
-WestBalcony = new Room("on the West Balcony, western part of the balcony overlooking the valley. What a view!");
-EastCorridor = new Room("in a corridor connecting the east balcony to other parts of the castle");
-WestCorridor = new Room("in a corridor connecting the west balcony to other parts of the castle");
-BlueRoom = new Room("in the Blue Room, a room full of treasure. Wow, are those diamonds?!");
-DiningHall = new Room("in the Dining Hall, a room where food is served. Yum, I do love roast pig");
-Courtyard = new Room("in the Courtyard, an open-air area in the middle of the castle");
-Chapel = new Room("in the Chapel, the religious center of the castle (also hosts knighting ceremonies");
-Watchtower = new Room("in the watchtower, which also doubles as a guardpost. Takes a few minutes to get up the 154 steps");
-Parlor = new Room("in the Parlor, a communal gathering area for the inhabitants of the castle");
-ServantQuarters = new Room("in the Servant Quarters, the place where the servants live");
-Kitchen = new Room("in the Kitchen. You can hear all sorts of noises down here...");
-RoyalHall = new Room("in the Royal Hall, where the king greets his subjects. What a pretty throne!");
-Library = new Room("in the Library, a room where all the books and manuscripts are kept");
-LivingQuarters = new Room("in the Living Quarters, a place where the king and every other non-servant stays in the castle");
-GreyRoom = new Room("in a very dark and dusty place called the Grey Room. I wonder what it's used for?");
-Portico = new Room("on the Portico, which also serves as the back exit to the castle. What does that lever do?");
-SecretPassage = new Room("in a chilly tunnel lit by torches. Leads right into the thick forest behind the castle. This looks an awful lot like a secret passage...");
+	// create the rooms and their descriptions 
+	Room* Outside = new Room("outside the entrance to the castle");
+	Room* EntryHall = new Room("in the entry hall of the castle. Are those guards carrying swords?");
+	Room* EastCorridor = new Room("in a corridor connecting the east balcony to other parts of the castle");
+	Room* WestCorridor = new Room("in a corridor connecting the west balcony to other parts of the castle");
+	Room* DiningHall = new Room("in the Dining Hall, a room where food is served. Yum, I do love roast pig");
+	Room* Courtyard = new Room("in the Courtyard, an open-air area in the middle of the castle");
+	Room* Chapel = new Room("in the Chapel, the religious center of the castle (also hosts knighting ceremonies");
+	Room* Watchtower = new Room("in the watchtower, which also doubles as a guardpost. Takes a few minutes to get up the 154 steps");
+	Room* Parlor = new Room("in the Parlor, a communal gathering area for the inhabitants of the castle");
+	Room* ServantQuarters = new Room("in the Servant Quarters, the place where the servants live");
+	Room* Kitchen = new Room("in the Kitchen. You can hear all sorts of noises down here...");
+	Room* RoyalHall = new Room("in the Royal Hall, where the king greets his subjects. What a pretty throne!");
+	Room* Library = new Room("in the Library, a room where all the books and manuscripts are kept");
+	Room* LivingQuarters = new Room("in the Living Quarters, a place where the king and every other non-servant stays in the castle");
+	Room* Portico = new Room("on the Portico, which also serves as the back exit to the castle. What does that lever do?");
+	Room* SecretPassage = new Room("in a chilly tunnel lit by torches. Leads right into the thick forest behind the castle. This looks an awful lot like a secret passage...");
 
 
-// initialise room exits
-Outside.setExit("east", EntryHall);
+	// initialise room exits
+	Outside.setExit("east", EntryHall);
 
-EntryHall.setExit("west", Outside);
-EntryHall.setExit("east", Courtyard);
-EntryHall.setExit("north", WestBalcony);
-EntryHall.setExit("south", EastBalcony);
+	EntryHall.setExit("west", Outside);
+	EntryHall.setExit("east", Courtyard);
+	EntryHall.setExit("north", WestBalcony);
+	EntryHall.setExit("south", EastBalcony);
 
-WestBalcony.setExit("south", EntryHall);
-WestBalcony.setExit("north", WestCorridor);
+	WestCorridor.setExit("south", WestBalcony);
+	WestCorridor.setExit("east", DiningHall);
 
-EastBalcony.setExit("south", EastCorridor);
-EastBalcony.setExit("north", EntryHall);
+	EastCorridor.setExit("east", Chapel);
+	EastCorridor.setExit("north", EastBalcony);
 
-WestCorridor.setExit("south", WestBalcony);
-WestCorridor.setExit("east", DiningHall);
+	DiningHall.setExit("west", WestCorridor);
+	DiningHall.setExit("east", ServantQuarters);
+	DiningHall.setExit("north", BlueRoom);
 
-EastCorridor.setExit("east", Chapel);
-EastCorridor.setExit("north", EastBalcony);
+	Courtyard.setExit("east", RoyalHall);
+	Courtyard.setExit("west", EntryHall);
 
-DiningHall.setExit("west", WestCorridor);
-DiningHall.setExit("east", ServantQuarters);
-DiningHall.setExit("north", BlueRoom);
+	Chapel.setExit("west", EastCorridor);
+	Chapel.setExit("south", Watchtower);
+	Chapel.setExit("east", LivingQuarters);
 
-BlueRoom.setExit("east", Parlor);
-BlueRoom.setExit("south", DiningHall);
+	Watchtower.setExit("north", Chapel);
+	Watchtower.setExit("east", GreyRoom);
 
-Courtyard.setExit("east", RoyalHall);
-Courtyard.setExit("west", EntryHall);
+	LivingQuarters.setExit("west", Chapel);
+	LivingQuarters.setExit("south", GreyRoom);
+	LivingQuarters.setExit("north", Library);
 
-Chapel.setExit("west", EastCorridor);
-Chapel.setExit("south", Watchtower);
-Chapel.setExit("east", LivingQuarters);
+	Library.setExit("south", LivingQuarters);
+	Library.setExit("north", RoyalHall);
 
-Watchtower.setExit("north", Chapel);
-Watchtower.setExit("east", GreyRoom);
+	RoyalHall.setExit("east", Portico);
+	RoyalHall.setExit("west", Courtyard);
+	RoyalHall.setExit("south", Library);
+	RoyalHall.setExit("north", Kitchen);
 
-GreyRoom.setExit("west", Watchtower);
-GreyRoom.setExit("north", LivingQuarters);
+	Kitchen.setExit("south", RoyalHall);
+	Kitchen.setExit("north", ServantQuarters);
 
-LivingQuarters.setExit("west", Chapel);
-LivingQuarters.setExit("south", GreyRoom);
-LivingQuarters.setExit("north", Library);
+	ServantQuarters.setExit("south", Kitchen);
+	ServantQuarters.setExit("north", Parlor);
+	ServantQuarters.setExit("west", DiningHall);
 
-Library.setExit("south", LivingQuarters);
-Library.setExit("north", RoyalHall);
+	Parlor.setExit("south", ServantQuarters);
+	Parlor.setExit("west", BlueRoom);
 
-RoyalHall.setExit("east", Portico);
-RoyalHall.setExit("west", Courtyard);
-RoyalHall.setExit("south", Library);
-RoyalHall.setExit("north", Kitchen);
+	Portico.setExit("west", RoyalHall);
+	Portico.setExit("north", SecretPassage);
 
-Kitchen.setExit("south", RoyalHall);
-Kitchen.setExit("north", ServantQuarters);
+	SecretPassage.setExit("south", Portico);
 
-ServantQuarters.setExit("south", Kitchen);
-ServantQuarters.setExit("north", Parlor);
-ServantQuarters.setExit("west", DiningHall);
+	currentRoom = Outside;  // start game outside
 
-Parlor.setExit("south", ServantQuarters);
-Parlor.setExit("west", BlueRoom);
+	// adding items and setting them to specific rooms 
+	Watchtower.setItem(new Item("MagicSpyglass"));
+	Courtyard.setItem(new Item("MagicRose"));
+	Parlor.setItem(new Item("MagicCrystalBall"));
+	RoyalHall.setItem(new Item("MagicCrown"));
+	SecretPassage.setItem(new Item("MagicScepter"));
 
-Portico.setExit("west", RoyalHall);
-Portico.setExit("north", SecretPassage);
-
-SecretPassage.setExit("south", Portico);
-
-currentRoom = Outside;  // start game outside
-
-// adding items and setting them to specific rooms 
-EastCorridor.setItem(new Item("MagicCloak"));
-Watchtower.setItem(new Item("MagicSpyglass"));
-Courtyard.setItem(new Item("MagicRose"));
-BlueRoom.setItem(new Item("MagicGems"));
-Parlor.setItem(new Item("MagicCrystalBall"));
-RoyalHall.setItem(new Item("MagicCrown"));
-SecretPassage.setItem(new Item("MagicScepter"));
-
-// adding items to the player's inventory to begin the game 
-inventory.add(new Item("Keystone"));
-inventory.add(new Item("PetDuckling"));
+	// adding items to the player's inventory to begin the game 
+	inventory.add(new Item("Keystone"));
+	inventory.add(new Item("PetDuckling"));
 }
-
-/**
-*  Main play routine.  Loops until end of play.
-*/
 
 /**
 * Print out the opening message for the player.
@@ -181,30 +184,7 @@ if(command.isUnknown()) {
 }
 
 String commandWord = command.getCommandWord();
-if (commandWord.equals("help")) {
-    printHelp();
-}
 
-/* 
- * wantToQuit is set equal to the "go" command. This ensure that if the 
- * player enters a room and they've met the specified criteria, they'll 
- * be able to win the game. This is in addition to the normal command word 
- * of "quit." 
-*/
-
-else if (commandWord.equals("go")) {
-    wantToQuit = goRoom(command);
-}
-else if (commandWord.equals("quit")) {
-    wantToQuit = quit(command);
-}
-else if (commandWord.equals("inventory")) {
-	printInventory();
-} else if (commandWord.equals("get")) {
-	getItem(command);
-} else if (commandWord.equals("drop")) {
-	dropItem(command);
-}
 return wantToQuit;
 }
 
