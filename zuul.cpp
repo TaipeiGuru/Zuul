@@ -11,7 +11,7 @@
 void createRoom();
 
 // Establishing variables and creating array lists that will be used later in the program 
-Room Outside, EntryHall, EastBalcony, EastCorridor, WestBalcony, WestCorridor, BlueRoom, DiningHall, Courtyard, Chapel, Watchtower, Parlor, ServantQuarters, Kitchen, RoyalHall, Library, LivingQuarters, GreyRoom, Portico, SecretPassage;
+Room Outside, EntryHall, EastCorridor, WestCorridor, DiningHall, Courtyard, Chapel, Watchtower, Parlor, ServantQuarters, Kitchen, RoyalHall, Library, LivingQuarters, Portico, SecretPassage;
 ArrayList<Item> inventory = new ArrayList<Item>();
 
 /**
@@ -33,15 +33,14 @@ int main() {
 		cin >> input;
 		cin.clear();
 		cin.ignore(10000, '\n');
-		if (strcmp(input, "help") == 0) {
-    	printHelp();
-		} else if (commandWord.equals("go")) {
+		if (commandWord.equals("go")) {
 			cout << "Which direction (\"east\", \"south\", \"west\", \"north\") do you want to go?" << endl;	
 			cin >> input;
 			cin.clear();
 			cin.ignore(10000, '\n');
 			goRoom(input);
 		} else if (commandWord.equals("quit")) {
+			cout << "Thank you for playing. Good bye." << endl;
 			finished = true;
 		} else if (commandWord.equals("inventory")) {
 			printInventory();
@@ -59,7 +58,6 @@ int main() {
 			dropItem(input);
 		}
 	}
-	cout << "Thank you for playing. Good bye." << endl;
 }
 
 // Create all the rooms and link their exits together.
@@ -159,99 +157,54 @@ private void createRooms() {
 void printWelcome() {
 	cout << endl; 
 	cout << "Welcome to Adventure!" << endl;
-	cout << "This is a castle with 19 rooms (20 if you include outside). Each room connects to at least one other room." << endl;
-	cout << "There are also 7 magic items spread throughout the castle." << endl;
-	cout << "To win, you must have all 7 magic items in your inventory and then go outside." << endl;
+	cout << "This is a castle with 15 rooms (26 if you include outside). Each room connects to at least one other room." << endl;
+	cout << "There are also 5 magic items spread throughout the castle." << endl;
+	cout << "To win, you must have all 5 magic items in your inventory and then go outside." << endl;
 	cout << "\nWarning: don't leave with the castle's keystone or the king's pet duckling!" << endl;
-	cout << "If you leave with the keystone, the castle will crumble to ruins. If you leave with the duckling, the king will become furious and order you to be killed." << endl;
+	cout << "If you leave with the keystone, the castle will crumble to ruins. If you leave with the duckling, the king will become furious and have you killed." << endl;
 	cout << "\nType 'help' if you need help." << endl;
 	cout << endl;
 	cout << currentRoom.getLongDescription() << endl;
 }
 
-/**
-* Given a command, process (that is: execute) the command.
-* If this command ends the game, true is returned, otherwise false is
-* returned.
-*/
-private boolean processCommand(Command command) 
-{
-boolean wantToQuit = false;
-
-if(command.isUnknown()) {
-    System.out.println("I don't know what you mean...");
-    return false;
-}
-
-String commandWord = command.getCommandWord();
-
-return wantToQuit;
-}
-
 // Print inventory method
 private void printInventory() {
 
-// Starting output is blank (so nothing gets printed if there's nothing in the inventory)
-String output = "";
+	cout << "You are carrying:" << endl;
 
-/* For loop used to run through the inventory array list and print any items that are in the inventory.
- * It looks more complicated than it actually is - I included some if-else statements to ensure that 
- * proper grammatical conventions are followed depending on the number of items in the inventory (mostly
- * because I was bored and it bothered me) 
- * */
-for (int i = 0; i < inventory.size(); i++) {
-	if(inventory.size() == 1) {
-		output += inventory.get(i).getDescription() + " ";
+	/* For loop used to run through the inventory array list and print any items that are in the inventory.
+	 * It looks more complicated than it actually is - I included some if-else statements to ensure that 
+	 * proper grammatical conventions are followed depending on the number of items in the inventory (mostly
+	 * because I was bored and it bothered me) 
+	 * */
+	for (int i = 0; i < inventory.size(); i++) {
+		if(inventory.size() == 1) {
+			output += inventory.get(i).getDescription() + " ";
 
-	} else if(inventory.size() == 2) {
-		if(i == inventory.size() - 1) {
-			output += inventory.get(i).getDescription();
+		} else if(inventory.size() == 2) {
+			if(i == inventory.size() - 1) {
+				output += inventory.get(i).getDescription();
+			} else {
+				output += inventory.get(i).getDescription() + " and ";
+			}
 		} else {
-			output += inventory.get(i).getDescription() + " and ";
-		}
-	} else {
-		if(i == inventory.size() - 1) {
-			output += "and " + inventory.get(i).getDescription() + " ";
-		} else {
-			output += inventory.get(i).getDescription() + ", ";
+			if(i == inventory.size() - 1) {
+				output += "and " + inventory.get(i).getDescription() + " ";
+			} else {
+				output += inventory.get(i).getDescription() + ", ";
+			}
 		}
 	}
-	}
-System.out.println("You are carrying:");
-System.out.println(output);
-
+	cout << output << endl;
 }
 // implementations of user commands:
-
-/**
-* Print out some help information.
-* Here we print some stupid, cryptic message and a list of the 
-* command words.
-*/
-private void printHelp() 
-{
-System.out.println("You are lost. You are alone. You wander");
-System.out.println("around in the castle.");
-System.out.println();
-System.out.println("Your command words are:");
-parser.showCommands();
-System.out.println("\nTo go somewhere, type \"go \" followed by a direction");
-System.out.println("To pick up an item, type \"get \" followed by the item");
-System.out.println("To drop an item, type \"drop \" followed by the item");   
-System.out.println("To see your inventory, type \"inventory\"");
-System.out.println("To quit the game, type \"quit\"");
-}
 
 /** 
 * Try to go to one direction. If there is an exit, enter the new
 * room, otherwise print an error message.
 */
-private boolean goRoom(Command command) 
-{
-if(!command.hasSecondWord()) {
-    // if there is no second word, we don't know where to go...
-    System.out.println("Go where?");
-    return false;
+private boolean goRoom(char* input) {
+	
 }
 
 String direction = command.getSecondWord();
@@ -344,18 +297,3 @@ else {
 
 }
 }
-/** 
-* "Quit" was entered. Check the rest of the command to see
-* whether we really quit the game. Return true, if this command
-* quits the game, false otherwise.
-*/
-private boolean quit(Command command) 
-{
-if(command.hasSecondWord()) {
-    System.out.println("Quit what?");
-    return false;
-}
-else
-    return true;  // signal that we want to quit
-}
-
