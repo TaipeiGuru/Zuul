@@ -3,9 +3,9 @@
 
 using namespace std;
 
-class room {
+class Room {
 public:
-  room();
+  Room();
   setExits();
   setDescription();
   getItems();
