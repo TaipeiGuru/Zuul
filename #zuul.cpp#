@@ -83,9 +83,6 @@ private void createRooms() {
 
 
 	// initialise room exits
-
-	map<string, Room> myMap;
-	
 	Outside.setExit("east", EntryHall);
 
 	EntryHall.setExit("west", Outside);
