@@ -63,103 +63,106 @@ int main() {
 // Create all the rooms and link their exits together.
 void createRooms() {
 
-	// create the rooms and their descriptions 
-	Room* Outside = new Room("outside the entrance to the castle");
-	Room* EntryHall = new Room("in the entry hall of the castle. Are those guards carrying swords?");
-	Room* NorthCorridor = new Room("in a corridor connecting the entry hall to other parts of the castle");
-	Room* SouthCorridor = new Room("in a corridor connecting the entry hall to other parts of the castle");
-	Room* DiningHall = new Room("in the Dining Hall, a room where food is served. Yum, I do love roast pig");
-	Room* Courtyard = new Room("in the Courtyard, an open-air area in the middle of the castle");
-	Room* Chapel = new Room("in the Chapel, the religious center of the castle (also hosts knighting ceremonies");
-	Room* Watchtower = new Room("in the watchtower, which also doubles as a guardpost. Takes a few minutes to get up the 154 steps");
-	Room* Parlor = new Room("in the Parlor, a communal gathering area for the inhabitants of the castle");
-	Room* ServantQuarters = new Room("in the Servant Quarters, the place where the servants live");
-	Room* Kitchen = new Room("in the Kitchen. You can hear all sorts of noises down here...");
-	Room* RoyalHall = new Room("in the Royal Hall, where the king greets his subjects. What a pretty throne!");
-	Room* Library = new Room("in the Library, a room where all the books and manuscripts are kept");
-	Room* LivingQuarters = new Room("in the Living Quarters, a place where the king and every other non-servant stays in the castle");
-	Room* Portico = new Room("on the Portico, which also serves as the back exit to the castle. What does that lever do?");
-	Room* SecretPassage = new Room("in a chilly tunnel lit by torches. Leads right into the thick forest behind the castle. This looks an awful lot like a secret passage...");
-
-
-	// initialise room exits
-
 	map<char*, Room*> myMap;
 	
-	// Outside
+	// create the rooms and their descriptions 
+	Room* Outside = new Room();
+	strcpy(Outside->getDescription(), "outside the entrance to the castle");
 	myMap["east"] = EntryHall; 
-
-	// EntryHall
+	
+	Room* EntryHall = new Room();
+	strcpy(EntryHall->setDescription(), "in the entry hall of the castle. Are those guards carrying swords?");
 	myMap["east"] = Courtyard;
 	myMap["west"] = Outside;
 	myMap["south"] = SouthCorridor;
 	myMap["north"] = NorthCorridor;
 	
-	// North Corridor
+	Room* NorthCorridor = new Room();
+	strcpy(NorthCorridor->setDescription(), "in a corridor connecting the entry hall to other parts of the castle");
 	myMap["south"] = EntryHall;
 	myMap["east"] = DiningHall;
-
-	// South Corridor
+	
+	Room* SouthCorridor = new Room();
+	strcpy(SouthCorridor->setDescription(), "in a corridor connecting the entry hall to other parts of the castle");
 	myMap["north"] = EntryHall;
 	myMap["east"] = Chapel;
 	
-	// Dining Hall
+	Room* DiningHall = new Room();
+	strcpy(DiningHall->setDescription(), "in the Dining Hall, a room where food is served. Yum, I do love roast pig");
 	myMap["west"] = NorthCorridor;
 	myMap["east"] = ServantQuarters;
-
 	
-	// Courtyard
+	Room* Courtyard = new Room();
+	strcpy(Courtyard->setDescription(), "in the Courtyard, an open-air area in the middle of the castle");
 	myMap["west"] = EntryHall;
 	myMap["east"] = RoyalHall;
-
-	// Chapel
+	
+	Room* Chapel = new Room();
+	strcpy(Chapel->setDescription(), "in the Chapel, the religious center of the castle (also hosts knighting ceremonies");
 	myMap["south"] = Watchtower;
 	myMap["west"] = SouthCorridor;	
 	myMap["east"] = LivingQuarters;
-
-	// Watchtower
-	myMap["north"] = Chapel;
-
 	
-	// Living Quarters
-	myMap["north"] = Library;
-	myMap["west"] = Chapel;
-
-	// Library
-	myMap["south"] = LivingQuarters;
-	myMap["north"] = RoyalHall;
-
-	// Royal Hall
+	Room* Watchtower = new Room();
+	strcpy(Watchtower->setDescription(), "in the watchtower, which also doubles as a guardpost. Takes a few minutes to get up the 154 steps");
+	myMap["north"] = Chapel;
+	
+	Room* Parlor = new Room();
+	strcpy(Parlor->setDescription(), "in the Parlor, a communal gathering area for the inhabitants of the castle");
+	myMap["south"] = ServantQuarters;
+	
+	Room* ServantQuarters = new Room();
+	strcpy(ServantQuarters->setDescription(), "in the Servant Quarters, the place where the servants live");
+	myMap["south"] = Kitchen;
+	myMap["west"] = DiningHall;
+	myMap["north"] = Parlor;
+	
+	Room* Kitchen = new Room();
+	strcpy(Kitchen->setDescription(), "in the Kitchen. You can hear all sorts of noises down here...");
+	myMap["south"] = RoyalHall;
+	myMap["north"] = ServantQuarters;
+	
+	Room* RoyalHall = new Room();
+	strcpy(RoyalHall->setDescription(), "in the Royal Hall, where the king greets his subjects. What a pretty throne!");
 	myMap["south"] = Library;
 	myMap["east"] = Portico;
 	myMap["north"] = Kitchen;
 	myMap["west"] = Courtyard;
-
-	// Kitchen
-	myMap["south"] = RoyalHall;
-	myMap["north"] = ServantQuarters;
-
-	// Servant's Quarters
-	myMap["south"] = Kitchen;
-	myMap["west"] = DiningHall;
-	myMap["north"] = Parlor;
-
-	// Parlor
-	myMap["south"] = ServantQuarters;
-
-	// Portico
+	
+	Room* Library = new Room();
+	strcpy(Library->setDescription(), "in the Library, a room where all the books and manuscripts are kept");
+	myMap["south"] = LivingQuarters;
+	myMap["north"] = RoyalHall;
+	
+	Room* LivingQuarters = new Room();
+	strcpy(LivingQuarters->setDescription(), "in the Living Quarters, a place where the king and every other non-servant stays in the castle");
+	myMap["north"] = Library;
+	myMap["west"] = Chapel;
+	
+	Room* Portico = new Room();
+	strcpy(Portico->setDescription(), "on the Portico, which also serves as the back exit to the castle. What does that lever do?");
 	myMap["north"] = SecretPassage;
 	myMap["west"] = RoyalHall;
-
-	// Secret Passage
+	
+	Room* SecretPassage = new Room();
+	strcpy(SecretPassage->setDescription(), "in a chilly tunnel lit by torches. Leads right into the thick forest behind the castle. This looks an awful lot like a secret passage...");
 	myMap["south"] = Portico;
-
-	// adding items and setting them to specific rooms 
-	Watchtower.setItem(new Item("MagicSpyglass"));
-	Courtyard.setItem(new Item("MagicRose"));
-	Parlor.setItem(new Item("MagicCrystalBall"));
-	RoyalHall.setItem(new Item("MagicCrown"));
-	SecretPassage.setItem(new Item("MagicScepter"));
+	
+	// Initializing and assigning items to rooms
+	Item* MagicSpyglass = new Item();
+	Watchtower->setItem(MagicSpyglass);
+	
+	Item* MagicRose = new Item();
+	Courtyard->setItem(MagicRose);
+	
+	Item* MagicCrystalBall = new Item();
+	Parlor->setItem(MagicCrystalBall);
+	
+	Item* MagicCrown = new Item();
+	RoyalHall->setItem(MagicCrown);
+	
+	Item* MagicScepter = new Item();
+	SecretPassage->setItem(MagicScepter);
 
 	// adding items to the player's inventory to begin the game 
 	inventory.add(new Item("Keystone"));
