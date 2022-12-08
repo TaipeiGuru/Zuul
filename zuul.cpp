@@ -61,13 +61,13 @@ int main() {
 }
 
 // Create all the rooms and link their exits together.
-private void createRooms() {
+void createRooms() {
 
 	// create the rooms and their descriptions 
 	Room* Outside = new Room("outside the entrance to the castle");
 	Room* EntryHall = new Room("in the entry hall of the castle. Are those guards carrying swords?");
-	Room* EastCorridor = new Room("in a corridor connecting the east balcony to other parts of the castle");
-	Room* WestCorridor = new Room("in a corridor connecting the west balcony to other parts of the castle");
+	Room* NorthCorridor = new Room("in a corridor connecting the entry hall to other parts of the castle");
+	Room* SouthCorridor = new Room("in a corridor connecting the entry hall to other parts of the castle");
 	Room* DiningHall = new Room("in the Dining Hall, a room where food is served. Yum, I do love roast pig");
 	Room* Courtyard = new Room("in the Courtyard, an open-air area in the middle of the castle");
 	Room* Chapel = new Room("in the Chapel, the religious center of the castle (also hosts knighting ceremonies");
@@ -84,63 +84,75 @@ private void createRooms() {
 
 	// initialise room exits
 
-	map<string, Room> myMap;
+	map<char*, Room*> myMap;
 	
-	Outside.setExit("east", EntryHall);
+	// Outside
+	myMap["east"] = EntryHall; 
 
-	EntryHall.setExit("west", Outside);
-	EntryHall.setExit("east", Courtyard);
-	EntryHall.setExit("north", WestBalcony);
-	EntryHall.setExit("south", EastBalcony);
+	// EntryHall
+	myMap["east"] = Courtyard;
+	myMap["west"] = Outside;
+	myMap["south"] = SouthCorridor;
+	myMap["north"] = NorthCorridor;
+	
+	// North Corridor
+	myMap["south"] = EntryHall;
+	myMap["east"] = DiningHall;
 
-	WestCorridor.setExit("south", WestBalcony);
-	WestCorridor.setExit("east", DiningHall);
+	// South Corridor
+	myMap["north"] = EntryHall;
+	myMap["east"] = Chapel;
+	
+	// Dining Hall
+	myMap["west"] = NorthCorridor;
+	myMap["east"] = ServantQuarters;
 
-	EastCorridor.setExit("east", Chapel);
-	EastCorridor.setExit("north", EastBalcony);
+	
+	// Courtyard
+	myMap["west"] = EntryHall;
+	myMap["east"] = RoyalHall;
 
-	DiningHall.setExit("west", WestCorridor);
-	DiningHall.setExit("east", ServantQuarters);
-	DiningHall.setExit("north", BlueRoom);
+	// Chapel
+	myMap["south"] = Watchtower;
+	myMap["west"] = SouthCorridor;	
+	myMap["east"] = LivingQuarters;
 
-	Courtyard.setExit("east", RoyalHall);
-	Courtyard.setExit("west", EntryHall);
+	// Watchtower
+	myMap["north"] = Chapel;
 
-	Chapel.setExit("west", EastCorridor);
-	Chapel.setExit("south", Watchtower);
-	Chapel.setExit("east", LivingQuarters);
+	
+	// Living Quarters
+	myMap["north"] = Library;
+	myMap["west"] = Chapel;
 
-	Watchtower.setExit("north", Chapel);
-	Watchtower.setExit("east", GreyRoom);
+	// Library
+	myMap["south"] = LivingQuarters;
+	myMap["north"] = RoyalHall;
 
-	LivingQuarters.setExit("west", Chapel);
-	LivingQuarters.setExit("south", GreyRoom);
-	LivingQuarters.setExit("north", Library);
+	// Royal Hall
+	myMap["south"] = Library;
+	myMap["east"] = Portico;
+	myMap["north"] = Kitchen;
+	myMap["west"] = Courtyard;
 
-	Library.setExit("south", LivingQuarters);
-	Library.setExit("north", RoyalHall);
+	// Kitchen
+	myMap["south"] = RoyalHall;
+	myMap["north"] = ServantQuarters;
 
-	RoyalHall.setExit("east", Portico);
-	RoyalHall.setExit("west", Courtyard);
-	RoyalHall.setExit("south", Library);
-	RoyalHall.setExit("north", Kitchen);
+	// Servant's Quarters
+	myMap["south"] = Kitchen;
+	myMap["west"] = DiningHall;
+	myMap["north"] = Parlor;
 
-	Kitchen.setExit("south", RoyalHall);
-	Kitchen.setExit("north", ServantQuarters);
+	// Parlor
+	myMap["south"] = ServantQuarters;
 
-	ServantQuarters.setExit("south", Kitchen);
-	ServantQuarters.setExit("north", Parlor);
-	ServantQuarters.setExit("west", DiningHall);
+	// Portico
+	myMap["north"] = SecretPassage;
+	myMap["west"] = RoyalHall;
 
-	Parlor.setExit("south", ServantQuarters);
-	Parlor.setExit("west", BlueRoom);
-
-	Portico.setExit("west", RoyalHall);
-	Portico.setExit("north", SecretPassage);
-
-	SecretPassage.setExit("south", Portico);
-
-	currentRoom = Outside;  // start game outside
+	// Secret Passage
+	myMap["south"] = Portico;
 
 	// adding items and setting them to specific rooms 
 	Watchtower.setItem(new Item("MagicSpyglass"));
