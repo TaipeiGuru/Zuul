@@ -10,6 +10,7 @@
 
 void createRoom();
 
+
 // Establishing variables and creating array lists that will be used later in the program 
 Room Outside, EntryHall, EastCorridor, WestCorridor, DiningHall, Courtyard, Chapel, Watchtower, Parlor, ServantQuarters, Kitchen, RoyalHall, Library, LivingQuarters, Portico, SecretPassage;
 ArrayList<Item> inventory = new ArrayList<Item>();
@@ -20,9 +21,10 @@ ArrayList<Item> inventory = new ArrayList<Item>();
 
 // Main method
 int main() {
-	char input[10];
-	createRooms();
+  vector<Room*> rooms;
+  createRooms(rooms);
 	printWelcome();
+	char input[10];
 
 	// Enter the main command loop.  Here we repeatedly read commands and
 	// execute them until the game is over.
@@ -34,11 +36,12 @@ int main() {
 		cin.clear();
 		cin.ignore(10000, '\n');
 		if (commandWord.equals("go")) {
-			cout << "Which direction (\"east\", \"south\", \"west\", \"north\") do you want to go?" << endl;	
+			cout << "Which direction do you want to go? Your options are:" << endl;
+			getCurrentRoom()->listExits();
 			cin >> input;
 			cin.clear();
 			cin.ignore(10000, '\n');
-			goRoom(input);
+			goRoom(rooms, input);
 		} else if (commandWord.equals("quit")) {
 			cout << "Thank you for playing. Good bye." << endl;
 			finished = true;
@@ -60,8 +63,20 @@ int main() {
 	}
 }
 
+void goRoom(map<Room*> rooms, char* direction) {
+  map<Room*>::iterator iter;
+  for(iter rooms.begin(); iter != rooms.end(); iter++) {
+   if(strcpy(getCurrentRoom(), (*iter)->getRoom()) == 0) {
+    setCurrentRoom(getCurrentRoom()->getRoomByDirection(direction);
+    cout << "Current room: " << getCurrentRoom() << endl;
+    
+   }
+  }
+	setCurrentRoom(exits.second())
+}
+
 // Create all the rooms and link their exits together.
-void createRooms() {
+void createRooms(vector<Room*> rooms) {
 
 	map<char*, Room*> myMap;
 	
