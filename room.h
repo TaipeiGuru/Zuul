@@ -2,29 +2,29 @@
 #include <cstring>
 #include <vector>
 #include <map>
-#include "Item.h"
+#include "item.h"
 
 #ifndef ROOM_H
 #define ROOM_H
 
 using namespace std;
 
-class Room {
+class room {
 public:
-  Room();
-  map<char*, Room*>* setExits();
+  room();
+  map<char*, room*>* setExits();
   char* setDescription();
-  void getItems();
+  void retrieveItems();
   void listItems();
   void dropItems();
-  vector<Item*>* getItems();
-  map<char*, Room*>* getExits();
+  vector<item*>* getItems();
+  map<char*, room*>* getExits();
   void listExits();
-  Room* getRoomByDirection(char* direction);
+  room* getRoomByDirection(char* direction);
 private:
   char description[300];
-  vector<Item*> roomItems;
-  map<char*, Room*>* roomExits;
+  vector<rtem*> roomItems;
+  map<char*, room*>* roomExits;
 };
 
 #endif
