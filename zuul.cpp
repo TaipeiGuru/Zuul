@@ -63,16 +63,17 @@ int main() {
 	}
 }
 
-void goRoom(map<Room*> rooms, char* direction) {
+void goRoom(vector<Room*> rooms, char* direction) {
   map<Room*>::iterator iter;
-  for(iter rooms.begin(); iter != rooms.end(); iter++) {
-   if(strcpy(getCurrentRoom(), (*iter)->getRoom()) == 0) {
-    setCurrentRoom(getCurrentRoom()->getRoomByDirection(direction);
-    cout << "Current room: " << getCurrentRoom() << endl;
-    
-   }
+  for(iter = rooms.begin(); iter != rooms.end(); iter++) {
+    if(strcpy(getCurrentRoom(), (*iter)->getRoom()) == 0) {
+      setCurrentRoom(getCurrentRoom()->getRoomByDirection(direction);
+      cout << "You are now " << getDescription() << endl;
+      cout << "Items in the room: " << endl;
+      cout << getCurrentRoom()->listItems() << endl;
+    }
   }
-	setCurrentRoom(exits.second())
+  delete direction;
 }
 
 // Create all the rooms and link their exits together.
@@ -93,12 +94,12 @@ void createRooms(vector<Room*> rooms) {
 	myMap["north"] = NorthCorridor;
 	
 	Room* NorthCorridor = new Room();
-	strcpy(NorthCorridor->setDescription(), "in a corridor connecting the entry hall to other parts of the castle");
+	strcpy(NorthCorridor->setDescription(), "in a northern corridor connecting the entry hall to other parts of the castle");
 	myMap["south"] = EntryHall;
 	myMap["east"] = DiningHall;
 	
 	Room* SouthCorridor = new Room();
-	strcpy(SouthCorridor->setDescription(), "in a corridor connecting the entry hall to other parts of the castle");
+	strcpy(SouthCorridor->setDescription(), "in a southern corridor connecting the entry hall to other parts of the castle");
 	myMap["north"] = EntryHall;
 	myMap["east"] = Chapel;
 	
