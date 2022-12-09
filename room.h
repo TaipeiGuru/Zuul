@@ -1,5 +1,8 @@
 #include <iostream>
 #include <cstring>
+#include <vector>
+#include <map>
+#include "Item.h"
 
 #ifndef ROOM_H
 #define ROOM_H
