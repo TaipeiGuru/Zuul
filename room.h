@@ -1,16 +1,23 @@
 #include <iostream>
 #include <cstring>
 
+#ifndef ROOM_H
+#define ROOM_H
+
 using namespace std;
 
 class Room {
 public:
   Room();
-  setExits();
-  setDescription();
-  getItems();
-  printItems();
-  dropItems();
+  map<char*, Room*>* setExits();
+  char* setDescription();
+  void getItems();
+  void listItems();
+  void dropItems();
 private:
-  char description[200];
+  char description[300];
+  vector<Item*> roomItems;
+  map<char*, Room*>* roomExits;
 };
+
+#endif
