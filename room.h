@@ -14,6 +14,7 @@ public:
   void getItems();
   void listItems();
   void dropItems();
+  map<char*, Room*>* listExits();
 private:
   char description[300];
   vector<Item*> roomItems;
