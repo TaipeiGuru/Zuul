@@ -2,18 +2,20 @@
 #include <cstring>
 #include <vector>
 #include <iomanip>
+#include <map>
+#include <iterator>
+#include "room.h"
+#include "item.h"
 
 /* This is the game of Zuul, a text-based adventure game that focuses on the user finding
  * certain items in the rooms of a castle and making it out safely. It was initially created 
  * by Michael Kolling and David J. Barnes, and was modified by Jason Randolph. Last edits were 
  * made 12/2/22. */
 
-void createRoom();
-
-
-// Establishing variables and creating array lists that will be used later in the program 
-Room Outside, EntryHall, EastCorridor, WestCorridor, DiningHall, Courtyard, Chapel, Watchtower, Parlor, ServantQuarters, Kitchen, RoyalHall, Library, LivingQuarters, Portico, SecretPassage;
-ArrayList<Item> inventory = new ArrayList<Item>();
+void createRooms(vector<room*>* rooms, vector<item*> roomItems, vector<char*> inventory);
+void printWelcome();
+void getItems(vector<char*>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom);
+void dropItems(vector<char*>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom);
 
 /**
 * Create the game and initialise its internal map.
@@ -21,9 +23,11 @@ ArrayList<Item> inventory = new ArrayList<Item>();
 
 // Main method
 int main() {
-  vector<Room*> rooms;
+  vector<room*> rooms;
+	vector<item*> roomItems;
+  vector<char*> inventory;
   int thisRoom = 0;
-  createRooms(rooms);
+  createRooms(vector<room*>* rooms, vector<item*> roomItems, vector<char*> inventory);
 	printWelcome();
 	char input[10];
 
@@ -42,24 +46,16 @@ int main() {
 			cin >> input;
 			cin.clear();
 			cin.ignore(10000, '\n');
-			thisRoom = goRoom(rooms, input);
+			thisRoom = goRoom(rooms, input, thisRoom);
 		} else if (commandWord.equals("quit")) {
 			cout << "Thank you for playing. Good bye." << endl;
 			finished = true;
 		} else if (commandWord.equals("inventory")) {
 			printInventory();
 		} else if (commandWord.equals("get")) {
-			cout << "Which item do you want to get?" << endl;	
-			cin.get(input, 50);
-			cin.clear();
-			cin.ignore(10000, '\n');
-			getItem(input);
+      getItems(inventory, rooms, roomItems, thisRoom);
 		} else if (commandWord.equals("drop")) {
-			cout << "Which item do you want to drop?" << endl;	
-			cin.get(input, 50);
-			cin.clear();
-			cin.ignore(10000, '\n');
-			dropItem(input);
+			dropItems(inventory, rooms, roomItems, thisRoom);
 		}
 	}
 }
@@ -79,13 +75,14 @@ int goRoom(vector<Room*> rooms, char* direction, int thisRoom) {
 }
 
 // Create all the rooms and link their exits together.
-void createRooms(vector<room*>* rooms, vector<item*>* roomItems) {
+void createRooms(vector<room*>* rooms, vector<item*>* roomItems, vector<char*>* inventory) {
 	
 	// create the rooms and their descriptions 
 	Room* Outside = new Room();
 	strcpy(Outside->getDescription(), "outside the entrance to the castle");
 	Outside->getRoomExits()->insert(pair<char*, Room*>("east", EntryHall));
 	Outside->setRoom(1);
+	rooms->push_back(Outside);
 	
 	Room* EntryHall = new Room();
 	strcpy(EntryHall->setDescription(), "in the entry hall of the castle. Are those guards carrying swords?");
@@ -94,30 +91,35 @@ void createRooms(vector<room*>* rooms, vector<item*>* roomItems) {
 	EntryHall->getRoomExits()->insert(pair<char*, Room*>("north", NorthCorridor));
 	EntryHall->getRoomExits()->insert(pair<char*, Room*>("south", SouthCorridor));
 	EntryHall->setRoom(2);
+	rooms->push_back(EntryHall);
 	
 	Room* NorthCorridor = new Room();
 	strcpy(NorthCorridor->setDescription(), "in a northern corridor connecting the entry hall to other parts of the castle");
 	NorthCorridor->getRoomExits()->insert(pair<char*, Room*>("south", EntryHall));
 	NorthCorridor->getRoomExits()->insert(pair<char*, Room*>("east", DiningHall));
-	NorthCorridor->setRoom(3);	
+	NorthCorridor->setRoom(3);
+	rooms->push_back(NorthCorridor);
 	
 	Room* SouthCorridor = new Room();
 	strcpy(SouthCorridor->setDescription(), "in a southern corridor connecting the entry hall to other parts of the castle");
 	SouthCorridor->getRoomExits()->insert(pair<char*, Room*>("north", EntryHall));
 	SouthCorridor->getRoomExits()->insert(pair<char*, Room*>("east", Chapel));
 	SouthCorridor->setRoom(4);
+	rooms->push_back(SouthCorridor);
 		
 	Room* DiningHall = new Room();
 	strcpy(DiningHall->setDescription(), "in the Dining Hall, a room where food is served. Yum, I do love roast pig");
 	DiningHall->getRoomExits()->insert(pair<char*, Room*>("west", NorthCorridor));
 	DiningHall->getRoomExits()->insert(pair<char*, Room*>("east", ServantQuarters));
 	DiningHall->setRoom(5);
+	rooms->push_back(DiningHall);
 		
 	Room* Courtyard = new Room();
 	strcpy(Courtyard->setDescription(), "in the Courtyard, an open-air area in the middle of the castle");
 	Courtyard->getRoomExits()->insert(pair<char*, Room*>("west", EntryHall));
 	Courtyard->getRoomExits()->insert(pair<char*, Room*>("east", RoyalHall));
 	Courtyard->setRoom(6);
+	rooms->push_back(Courtyard);
 		
 	Room* Chapel = new Room();
 	strcpy(Chapel->setDescription(), "in the Chapel, the religious center of the castle (also hosts knighting ceremonies");
@@ -125,16 +127,19 @@ void createRooms(vector<room*>* rooms, vector<item*>* roomItems) {
 	Chapel->getRoomExits()->insert(pair<char*, Room*>("west", SouthCorridor));
 	Chapel->getRoomExits()->insert(pair<char*, Room*>("south", Watchtower));
 	Chapel->setRoom(7);
+	rooms->push_back(Chapel);
 		
 	Room* Watchtower = new Room();
 	strcpy(Watchtower->setDescription(), "in the watchtower, which also doubles as a guardpost. Takes a few minutes to get up the 154 steps");
 	Watchtower->getRoomExits()->insert(pair<char*, Room*>("north", Chapel));
 	Watchtower->setRoom(8);
+	rooms->push_back(Watchtower);
 		
 	Room* Parlor = new Room();
 	strcpy(Parlor->setDescription(), "in the Parlor, a communal gathering area for the inhabitants of the castle");
 	Parlor->getRoomExits()->insert(pair<char*, Room*>("south", ServantQuarters));
 	Parlor->setRoom(9);
+	rooms->push_back(Parlor);
 		
 	Room* ServantQuarters = new Room();
 	strcpy(ServantQuarters->setDescription(), "in the Servant Quarters, the place where the servants live");
@@ -142,12 +147,14 @@ void createRooms(vector<room*>* rooms, vector<item*>* roomItems) {
 	ServantQuarters->getRoomExits()->insert(pair<char*, Room*>("south", Kitchen));
 	ServantQuarters->getRoomExits()->insert(pair<char*, Room*>("north", Parlor));
 	ServantQuarters->setRoom(10);
+	rooms->push_back(ServantQuarters);
 		
 	Room* Kitchen = new Room();
 	strcpy(Kitchen->setDescription(), "in the Kitchen. You can hear all sorts of noises down here...");
 	Kitchen->getRoomExits()->insert(pair<char*, Room*>("south", RoyalHall));
 	Kitchen->getRoomExits()->insert(pair<char*, Room*>("north", ServantQuarters));
 	Kitchen->setRoom(11);
+	rooms->push_back(Kitchen);
 		
 	Room* RoyalHall = new Room();
 	strcpy(RoyalHall->setDescription(), "in the Royal Hall, where the king greets his subjects. What a pretty throne!");
@@ -156,49 +163,65 @@ void createRooms(vector<room*>* rooms, vector<item*>* roomItems) {
 	RoyalHall->getRoomExits()->insert(pair<char*, Room*>("north", Kitchen));
 	RoyalHall->getRoomExits()->insert(pair<char*, Room*>("south", Library));
 	RoyalHall->setRoom(12);
+	rooms->push_back(RoyalHall);
 	
 	Room* Library = new Room();
 	strcpy(Library->setDescription(), "in the Library, a room where all the books and manuscripts are kept");
 	Library->getRoomExits()->insert(pair<char*, Room*>("south", LivingQuarters));
 	Library->getRoomExits()->insert(pair<char*, Room*>("north", RoyalHall));
 	Library->setRoom(13);
+	rooms->push_back(Library);
 		
 	Room* LivingQuarters = new Room();
 	strcpy(LivingQuarters->setDescription(), "in the Living Quarters, a place where the king and every other non-servant stays in the castle");
 	LivingQuarters->getRoomExits()->insert(pair<char*, Room*>("north", Library));
 	LivingQuarters->getRoomExits()->insert(pair<char*, Room*>("west", Chapel));
 	LivingQuarters->setRoom(4);
+	rooms->push_back(LivingQuarters);
 		
 	Room* Portico = new Room();
 	strcpy(Portico->setDescription(), "on the Portico, which also serves as the back exit to the castle. What does that lever do?");
 	Portico->getRoomExits()->insert(pair<char*, Room*>("north", SecretPassage));
 	Portico->getRoomExits()->insert(pair<char*, Room*>("west", RoyalHall));
 	Portico->setRoom(15);
+	rooms->push_back(Portico);
 		
 	Room* SecretPassage = new Room();
 	strcpy(SecretPassage->setDescription(), "in a chilly tunnel lit by torches. This looks an awful lot like a secret passage...");
 	SecretPassage->getRoomExits()->insert(pair<char*, Room*>("south", Portico));
 	SecretPassage->setRoom(16);
+	rooms->push_back(SecretPassage);
 		
 	// Initializing and assigning items to rooms
-	Item* MagicSpyglass = new Item();
-	Watchtower->setItem(MagicSpyglass);
+	item* MagicSpyglass = new item();
+  strcpy(MagicSpyglass->getItemType(), "MagicSpyglass");
+	Watchtower->dropItems(MagicSpyglass);
+
+	item* MagicRose = new item();
+  strcpy(MagicRose->getItemType(), "MagicRose");
+	Courtyard->dropItems(MagicRose);
 	
-	Item* MagicRose = new Item();
-	Courtyard->setItem(MagicRose);
+	item* MagicCrystalBall = new item();
+  strcpy(MagicCrystalBall->getItemType(), "MagicCrystalBall");
+	Parlor->dropItems(MagicCrystalBall);
 	
-	Item* MagicCrystalBall = new Item();
-	Parlor->setItem(MagicCrystalBall);
+	item* MagicCrown = new item();
+  strcpy(MagicCrown->getItemType(), "MagicCrown");
+	RoyalHall->dropItems(MagicCrown);
 	
-	Item* MagicCrown = new Item();
-	RoyalHall->setItem(MagicCrown);
-	
-	Item* MagicScepter = new Item();
-	SecretPassage->setItem(MagicScepter);
+	item* MagicScepter = new item();
+  strcpy(MagicScepter->getItemType(), "MagicScepter");
+	SecretPassage->dropItems(MagicScepter);
 
 	// adding items to the player's inventory to begin the game 
-	inventory.add(new Item("Keystone"));
-	inventory.add(new Item("PetDuckling"));
+  
+  item* Keystone = new item();
+  strcpy(Keystone->getItemType(), "Keystone");
+  inventory.push_back(Keystone);
+
+  item* PetDuckling = new item();
+  strcpy(PetDuckling->getItemType(), "PetDuckling");
+	inventory.push_back(PetDuckling);
 }
 
 /**
@@ -218,132 +241,41 @@ void printWelcome() {
 }
 
 // Print inventory method
-private void printInventory() {
-
-	cout << "You are carrying:" << endl;
-
-	/* For loop used to run through the inventory array list and print any items that are in the inventory.
-	 * It looks more complicated than it actually is - I included some if-else statements to ensure that 
-	 * proper grammatical conventions are followed depending on the number of items in the inventory (mostly
-	 * because I was bored and it bothered me) 
-	 * */
-	for (int i = 0; i < inventory.size(); i++) {
-		if(inventory.size() == 1) {
-			output += inventory.get(i).getDescription() + " ";
-
-		} else if(inventory.size() == 2) {
-			if(i == inventory.size() - 1) {
-				output += inventory.get(i).getDescription();
-			} else {
-				output += inventory.get(i).getDescription() + " and ";
-			}
-		} else {
-			if(i == inventory.size() - 1) {
-				output += "and " + inventory.get(i).getDescription() + " ";
-			} else {
-				output += inventory.get(i).getDescription() + ", ";
-			}
+void printInventory(vector<char*>* inventory) {
+  
+  vector<char*>::iterator iter;
+  
+  if(inventory.size() == 0){
+    cout << "You aren't carrying anything." << endl;
+  } else {
+    cout << "You are carrying: " << endl;
+    for (iter = inventory.begin(); iter != inventory.end(); iter++) {
+		  cout << (*iter)->getItemType();
 		}
-	}
-	cout << output << endl;
-}
-// implementations of user commands:
-
-/** 
-* Try to go to one direction. If there is an exit, enter the new
-* room, otherwise print an error message.
-*/
-private boolean goRoom(char* input) {
-	
+  }
 }
 
-String direction = command.getSecondWord();
-
-// Try to leave current room.
-Room nextRoom = currentRoom.getExit(direction);
-
-if (nextRoom == null)
-    System.out.println("There is no door!");
-else {
-    currentRoom = nextRoom;
-    System.out.println(currentRoom.getLongDescription());
-
-    /* Help with "contains()" method from https://www.geeksforgeeks.org/arraylist-contains-java/ 
-     * This is the winning condition. If the player's outside AND the number of items in the inventory 
-     * is 7 AND the inventory doesn't contain PetDucking or Keystone, the boolean will return as true 
-     * and the game ends. If not, play continues. 
-     * */
-    if(currentRoom == Outside && inventory.size() == 7 && inventory.contains("PetDuckling") == false && inventory.contains("Keystone") == false) {
-	System.out.println("Congratulations, all the magic items were collected. You won!");
-	return true;
-    }
-}
-return false;
-}
 
 // Method for picking up items 
-private void getItem(Command command) 
-{
-if(!command.hasSecondWord()) {
-    // if there is no second word, we don't know what to get...
-    System.out.println("Get what?");
-    return;
+void getItems(vector<char*>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom) {
+  char input[15];
+  map<room*>::iterator roomIter;
+  vector<item*>::iterator itemIter;
+  for(roomIter = rooms.begin(); roomIter != rooms.end(); roomIter++) {
+    if(strcmp(thisRoom, (*roomIter)->getRoom()) == 0) {
+      cout << "Which item would you like to pick up?" << endl;
+      cin >> input;
+		  cin.clear();
+		  cin.ignore(10000, '\n');
+      for(itemIter = rooms.begin(); itemIter != rooms.end(); itemIter++) {
+        if(strcmp(input, (*itemIter)->getItemType()) == 0) {
+          inventory->push_back(
+        }
+      }
+      cout << (*iter)->listItems() << endl;
+      room newRoom = (*iter)->getRoomByDirection(direction);
+      return newRoom->getRoom();
+    }
+  }
 }
 
-String item = command.getSecondWord();
-
-// Try to pick up item.
-Item newItem = currentRoom.getItem(item);
-
-if (newItem == null)
-    System.out.println("That is not a valid item!");
-
-/* 
- * Very similar to the goRoom method. If a valid item is entered, 
- * that item will be removed from the current room and added to the 
- * user's inventory. 
- * */
-else {
-    inventory.add(newItem);
-    currentRoom.removeItem(item);
-    System.out.println("You picked up the item: " + item);
-
-}
-}
-
-// Method for dropping items. Basically the same as the previous method but adding to room and removing from inventory instead.
-private void dropItem(Command command) 
-{
-if(!command.hasSecondWord()) {
-    // if there is no second word, we don't know what to drop...
-    System.out.println("Drop what?");
-    return;
-}
-
-String item = command.getSecondWord();
-
-// Try to drop item.
-Item newItem = null;
-int index = 0;
-
-/* 
- * This for loop runs through the inventory list and looks for an item that matches the user's input.
- * If an item is found, the index variable is set to that index and then that item is removed from the inventory
- * and placed in the current room. 
- * */
-for (int i = 0; i < inventory.size(); i++) {
-		if(inventory.get(i).getDescription().equals(item)) {
-			newItem = inventory.get(i);
-			index = i;
-		}
-	}
-
-if (newItem == null)
-    System.out.println("You don't have that item!");
-else {
-    inventory.remove(index);
-    currentRoom.setItem(new Item(item));
-    System.out.println("You dropped the item: " + item);
-
-}
-}
