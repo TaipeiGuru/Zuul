@@ -81,91 +81,105 @@ int goRoom(vector<Room*> rooms, char* direction, int thisRoom) {
 
 // Create all the rooms and link their exits together.
 void createRooms(vector<Room*> rooms) {
-
-	map<char*, Room*> myMap;
 	
 	// create the rooms and their descriptions 
 	Room* Outside = new Room();
 	strcpy(Outside->getDescription(), "outside the entrance to the castle");
-	myMap["east"] = EntryHall; 
+	Outside->getRoomExits()->insert(pair<char*, Room*>("east", EntryHall));
+	Outside->getRoom()->1;
 	
 	Room* EntryHall = new Room();
 	strcpy(EntryHall->setDescription(), "in the entry hall of the castle. Are those guards carrying swords?");
-	myMap["east"] = Courtyard;
-	myMap["west"] = Outside;
-	myMap["south"] = SouthCorridor;
-	myMap["north"] = NorthCorridor;
+	EntryHall->getRoomExits()->insert(pair<char*, Room*>("east", Courtyard));
+	EntryHall->getRoomExits()->insert(pair<char*, Room*>("west", Outside));
+	EntryHall->getRoomExits()->insert(pair<char*, Room*>("north", NorthCorridor));
+	EntryHall->getRoomExits()->insert(pair<char*, Room*>("south", SouthCorridor));
+	Outside->getRoom()->2;
 	
 	Room* NorthCorridor = new Room();
 	strcpy(NorthCorridor->setDescription(), "in a northern corridor connecting the entry hall to other parts of the castle");
-	myMap["south"] = EntryHall;
-	myMap["east"] = DiningHall;
+	NorthCorridor->getRoomExits()->insert(pair<char*, Room*>("south", EntryHall));
+	NorthCorridor->getRoomExits()->insert(pair<char*, Room*>("east", DiningHall));
+	Outside->getRoom()->3;
 	
 	Room* SouthCorridor = new Room();
 	strcpy(SouthCorridor->setDescription(), "in a southern corridor connecting the entry hall to other parts of the castle");
-	myMap["north"] = EntryHall;
-	myMap["east"] = Chapel;
+	SouthCorridor->getRoomExits()->insert(pair<char*, Room*>("north", EntryHall));
+	SouthCorridor->getRoomExits()->insert(pair<char*, Room*>("east", Chapel));
+	Outside->getRoom()->4;
 	
 	Room* DiningHall = new Room();
 	strcpy(DiningHall->setDescription(), "in the Dining Hall, a room where food is served. Yum, I do love roast pig");
-	myMap["west"] = NorthCorridor;
-	myMap["east"] = ServantQuarters;
+	DiningHall->getRoomExits()->insert(pair<char*, Room*>("west", NorthCorridor));
+	DiningHall->getRoomExits()->insert(pair<char*, Room*>("east", ServantQuarters));
+	Outside->getRoom()->5;
 	
 	Room* Courtyard = new Room();
 	strcpy(Courtyard->setDescription(), "in the Courtyard, an open-air area in the middle of the castle");
-	myMap["west"] = EntryHall;
-	myMap["east"] = RoyalHall;
+	Courtyard->getRoomExits()->insert(pair<char*, Room*>("west", EntryHall));
+	Courtyard->getRoomExits()->insert(pair<char*, Room*>("east", RoyalHall));
+	Outside->getRoom()->6;
 	
 	Room* Chapel = new Room();
 	strcpy(Chapel->setDescription(), "in the Chapel, the religious center of the castle (also hosts knighting ceremonies");
-	myMap["south"] = Watchtower;
-	myMap["west"] = SouthCorridor;	
-	myMap["east"] = LivingQuarters;
+	Chapel->getRoomExits()->insert(pair<char*, Room*>("east", LivingQuarters));
+	Chapel->getRoomExits()->insert(pair<char*, Room*>("west", SouthCorridor));
+	Chapel->getRoomExits()->insert(pair<char*, Room*>("south", Watchtower));
+	Outside->getRoom()->7;
 	
 	Room* Watchtower = new Room();
 	strcpy(Watchtower->setDescription(), "in the watchtower, which also doubles as a guardpost. Takes a few minutes to get up the 154 steps");
-	myMap["north"] = Chapel;
+	Watchtower->getRoomExits()->insert(pair<char*, Room*>("north", Chapel));
+	Outside->getRoom()->8;
 	
 	Room* Parlor = new Room();
 	strcpy(Parlor->setDescription(), "in the Parlor, a communal gathering area for the inhabitants of the castle");
-	myMap["south"] = ServantQuarters;
+	Parlor->getRoomExits()->insert(pair<char*, Room*>("south", ServantQuarters));
+	Outside->getRoom()->9;
 	
 	Room* ServantQuarters = new Room();
 	strcpy(ServantQuarters->setDescription(), "in the Servant Quarters, the place where the servants live");
-	myMap["south"] = Kitchen;
-	myMap["west"] = DiningHall;
-	myMap["north"] = Parlor;
+	ServantQuarters->getRoomExits()->insert(pair<char*, Room*>("west", DiningHall));
+	ServantQuarters->getRoomExits()->insert(pair<char*, Room*>("south", Kitchen));
+	ServantQuarters->getRoomExits()->insert(pair<char*, Room*>("north", Parlor));
+	Outside->getRoom()->10;
 	
 	Room* Kitchen = new Room();
 	strcpy(Kitchen->setDescription(), "in the Kitchen. You can hear all sorts of noises down here...");
-	myMap["south"] = RoyalHall;
-	myMap["north"] = ServantQuarters;
+	Kitchen->getRoomExits()->insert(pair<char*, Room*>("south", RoyalHall));
+	Kitchen->getRoomExits()->insert(pair<char*, Room*>("north", ServantQuarters));
+	Outside->getRoom()->11;
 	
 	Room* RoyalHall = new Room();
 	strcpy(RoyalHall->setDescription(), "in the Royal Hall, where the king greets his subjects. What a pretty throne!");
-	myMap["south"] = Library;
-	myMap["east"] = Portico;
-	myMap["north"] = Kitchen;
-	myMap["west"] = Courtyard;
+	RoyalHall->getRoomExits()->insert(pair<char*, Room*>("east", Portico));
+	RoyalHall->getRoomExits()->insert(pair<char*, Room*>("west", Courtyard));
+	RoyalHall->getRoomExits()->insert(pair<char*, Room*>("north", Kitchen));
+	RoyalHall->getRoomExits()->insert(pair<char*, Room*>("south", Library));
+	Outside->getRoom()->12;
 	
 	Room* Library = new Room();
 	strcpy(Library->setDescription(), "in the Library, a room where all the books and manuscripts are kept");
-	myMap["south"] = LivingQuarters;
-	myMap["north"] = RoyalHall;
+	Library->getRoomExits()->insert(pair<char*, Room*>("south", LivingQuarters));
+	Library->getRoomExits()->insert(pair<char*, Room*>("north", RoyalHall));
+	Outside->getRoom()->13;
 	
 	Room* LivingQuarters = new Room();
 	strcpy(LivingQuarters->setDescription(), "in the Living Quarters, a place where the king and every other non-servant stays in the castle");
-	myMap["north"] = Library;
-	myMap["west"] = Chapel;
+	LivingQuarters->getRoomExits()->insert(pair<char*, Room*>("north", Library));
+	LivingQuarters->getRoomExits()->insert(pair<char*, Room*>("west", Chapel));
+	Outside->getRoom()->14;
 	
 	Room* Portico = new Room();
 	strcpy(Portico->setDescription(), "on the Portico, which also serves as the back exit to the castle. What does that lever do?");
-	myMap["north"] = SecretPassage;
-	myMap["west"] = RoyalHall;
+	Portico->getRoomExits()->insert(pair<char*, Room*>("north", SecretPassage));
+	Portico->getRoomExits()->insert(pair<char*, Room*>("west", RoyalHall));
+	Outside->getRoom()->15;
 	
 	Room* SecretPassage = new Room();
-	strcpy(SecretPassage->setDescription(), "in a chilly tunnel lit by torches. Leads right into the thick forest behind the castle. This looks an awful lot like a secret passage...");
-	myMap["south"] = Portico;
+	strcpy(SecretPassage->setDescription(), "in a chilly tunnel lit by torches. This looks an awful lot like a secret passage...");
+	SecretPassage->getRoomExits()->insert(pair<char*, Room*>("south", Portico));
+	Outside->getRoom()->16;
 	
 	// Initializing and assigning items to rooms
 	Item* MagicSpyglass = new Item();
