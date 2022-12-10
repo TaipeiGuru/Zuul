@@ -60,3 +60,7 @@ Room* room::getRoomByDirection(char* direction) {
   }
   return this;
 }
+
+char* room::getRoom() {
+  return thisRoom; 
+}
