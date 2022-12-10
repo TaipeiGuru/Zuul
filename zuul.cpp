@@ -22,6 +22,8 @@ ArrayList<Item> inventory = new ArrayList<Item>();
 // Main method
 int main() {
   vector<Room*> rooms;
+  char thisRoom[20];
+  strcpy(thisRoom, "Outside");
   createRooms(rooms);
 	printWelcome();
 	char input[10];
@@ -63,14 +65,15 @@ int main() {
 	}
 }
 
-void goRoom(vector<Room*> rooms, char* direction) {
+int goRoom(vector<Room*> rooms, char* direction, int thisRoom) {
   map<Room*>::iterator iter;
   for(iter = rooms.begin(); iter != rooms.end(); iter++) {
-    if(strcpy(getCurrentRoom(), (*iter)->getRoom()) == 0) {
-      setCurrentRoom(getCurrentRoom()->getRoomByDirection(direction);
-      cout << "You are now " << getDescription() << endl;
+    if(strcmp(thisRoom, (*iter)->getRoom()) == 0) {
+      cout << "You are now " << (*iter)->showDescription() << endl;
       cout << "Items in the room: " << endl;
-      cout << getCurrentRoom()->listItems() << endl;
+      cout << (*iter)->listItems() << endl;
+      room newRoom = (*iter)->getRoomByDirection(direction);
+      return newRoom.getRoom()
     }
   }
   delete direction;
