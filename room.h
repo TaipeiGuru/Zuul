@@ -23,7 +23,7 @@ public:
   room* getRoomByDirection(char* direction);
 private:
   char description[300];
-  vector<rtem*> roomItems;
+  vector<item*> roomItems;
   map<char*, room*>* roomExits;
 };
 
