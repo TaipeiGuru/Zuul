@@ -20,9 +20,10 @@ public:
   vector<item*>* getRoomItems();
   void listExits();
   room* getRoomByDirection(char* direction);
-  char* getRoom();
+  int setRoom();
+  int getRoom();
 private:
-  char thisRoom[20];
+  int thisRoom;
   char description[300];
   vector<item*> roomItems;
   map<char*, room*>* roomExits;
