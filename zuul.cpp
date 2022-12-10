@@ -25,9 +25,9 @@ void dropItems(vector<char*>* inventory, vector<room*>* rooms, vector<item*>* ro
 int main() {
   vector<room*> rooms;
 	vector<item*> roomItems;
-  vector<char*> inventory;
+  vector<int> inventory;
   int thisRoom = 0;
-  createRooms(vector<room*>* rooms, vector<item*> roomItems, vector<char*> inventory);
+  createRooms(vector<room*>* rooms, vector<item*>* roomItems, vector<char*>* inventory);
 	printWelcome();
 	char input[10];
 
@@ -57,6 +57,25 @@ int main() {
 		} else if (commandWord.equals("drop")) {
 			dropItems(inventory, rooms, roomItems, thisRoom);
 		}
+    if(thisRoom == 0) {
+      if(inventory.size() == 5) {
+        vector<int>::iterator iter;
+        for(iter = inventory.begin(); iter != inventory.end(); iter++) {
+          if(strcmp((*iter)->getItemType(), "PetDuckling") != 0) {
+            if(strcmp((*iter)->getItemType(), "Keystone") != 0) {
+              cout << "Congratulations, you won!" << endl;
+              finished = true;
+            } else {
+              cout << "Uh oh....you went outside with the keystone. Game over - the castle is now collapsing on you..." << endl;
+              finished = true;
+            }
+          } else {
+            cout << "Uh oh....you went outside with the king's pet duckling. Game over - prepare to die..." << endl;
+            finished = true;
+          }
+        } 
+      }  
+    }
 	}
 }
 
@@ -250,31 +269,60 @@ void printInventory(vector<char*>* inventory) {
   } else {
     cout << "You are carrying: " << endl;
     for (iter = inventory.begin(); iter != inventory.end(); iter++) {
-		  cout << (*iter)->getItemType();
+		  cout << (*iter)->getItemType() << endl;
 		}
   }
 }
 
 
 // Method for picking up items 
-void getItems(vector<char*>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom) {
+void getItems(vector<int>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom) {
   char input[15];
   map<room*>::iterator roomIter;
   vector<item*>::iterator itemIter;
+  
   for(roomIter = rooms.begin(); roomIter != rooms.end(); roomIter++) {
     if(strcmp(thisRoom, (*roomIter)->getRoom()) == 0) {
       cout << "Which item would you like to pick up?" << endl;
       cin >> input;
 		  cin.clear();
 		  cin.ignore(10000, '\n');
-      for(itemIter = rooms.begin(); itemIter != rooms.end(); itemIter++) {
+      for(itemIter = roomItems.begin(); itemIter != roomItems.end(); itemIter++) {
         if(strcmp(input, (*itemIter)->getItemType()) == 0) {
-          inventory->push_back(
+          inventory->push_back((*item)->getItemID());
+          *item = roomItems->erase(*item);
         }
       }
-      cout << (*iter)->listItems() << endl;
-      room newRoom = (*iter)->getRoomByDirection(direction);
-      return newRoom->getRoom();
+      cout << "The " << input << " has been picked up!" << endl;
+    }
+  }
+}
+
+void dropItems(vector<char*>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom) {
+  char input[15];
+  vector<int>::iterator invIter;
+  map<room*>::iterator roomIter;
+  vector<item*>::iterator itemIter;
+  
+  cout << "Items in your inventory:" << endl;
+  for(invIter = inventory.begin(); invIter != inventory.end(); invIter++) {
+   cout << (*invIter)->getItemType(); 
+  }
+  
+  cout << "Which item would you like to drop?" << endl;
+  cin >> input;
+	cin.clear();
+	cin.ignore(10000, '\n');
+  
+  for(roomIter = rooms.begin(); roomIter != rooms.end(); roomIter++) {
+    if(strcmp(thisRoom, (*roomIter)->getRoom()) == 0) {
+      for(itemIter = roomItems.begin(); itemIter != roomItems.end(); itemIter++) {
+        if(strcmp(input, (*itemIter)->getItemType()) == 0) {
+          (*roomIter)->dropItems(*itemIter);
+          inventory->erase(*item);
+        }
+      }
+      cout << "The " << input << " has been dropped!" << endl;
     }
   }
 }
