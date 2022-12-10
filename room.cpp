@@ -61,6 +61,10 @@ Room* room::getRoomByDirection(char* direction) {
   return this;
 }
 
-char* room::getRoom() {
+void setRoom(int roomNum) {
+  thisRoom = roomNum; 
+}
+
+int room::getRoom() {
   return thisRoom; 
 }
