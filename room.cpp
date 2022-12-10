@@ -13,13 +13,13 @@ room::room() {
 
 void room::listExits() {
   map<char*, room*>::iterator iter;
-  for(iter = exits.begin(); iter != exits.end(); iter++) {
+  for(iter = roomExits.begin(); iter != roomExits.end(); iter++) {
     cout << it->first << endl; 
   }
 } 
 
 map<char*, room*>* room::getRoomExits() {
-  return &exits; 
+  return &roomExits; 
 }
 
 char* room::showDescription() {
@@ -28,24 +28,24 @@ char* room::showDescription() {
 
 void room::listItems() {
   vector<item*>::iterator iter;
-  for(iter = items.begin(); iter != items.end(); iter++) {
+  for(iter = roomItems.begin(); iter != roomItems.end(); iter++) {
     cout << (*iter)->getItemType() << endl; 
   }
 }
 
-vector <item*>* room::getItems() {
-  return &items; 
+vector <item*>* room::getRoomItems() {
+  return &roomItems; 
 }
 
 void room::dropItems(item* myItem) {
-  items.push_back(myItem);
+  roomItems.push_back(myItem);
 }
 
 void room::retrieveItems(item* myItem) {
   vector<item*>::iterator iter;
-  for(iter = items.begin(); iter != items.end(); iter++) {
+  for(iter = roomItems.begin(); iter != roomItems.end(); iter++) {
     if(strcmp((*iter)->getItemType(), myItem->getItemType()) == 0) {
-      items.erase(iter);
+      roomItems.erase(iter);
       return;
     }
   }
@@ -53,7 +53,7 @@ void room::retrieveItems(item* myItem) {
 
 Room* room::getRoomByDirection(char* direction) {
   map<char*, room*>::iterator iter;
-  for(iter = exits.begin(); iter != exits.end(); iter++) {
+  for(iter = roomExits.begin(); iter != roomExits.end(); iter++) {
     if(strcmp(iter->first, direction) == 0) {
       return it->second; 
     }
