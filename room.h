@@ -12,13 +12,12 @@ using namespace std;
 class room {
 public:
   room();
-  map<char*, room*>* setExits();
-  char* setDescription();
+  map<char*, room*>* getRoomExits();
+  char* showDescription();
   void retrieveItems();
   void listItems();
   void dropItems();
-  vector<item*>* getItems();
-  map<char*, room*>* getExits();
+  vector<item*>* getRoomItems();
   void listExits();
   room* getRoomByDirection(char* direction);
 private:
