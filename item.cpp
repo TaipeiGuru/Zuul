@@ -11,3 +11,11 @@ item::item() {
 char* getItemType() {
   return itemType; 
 }
+
+int getItemID() {
+  return itemID; 
+}
+
+void setItemID(int id) {
+  itemID = id;
+}
