@@ -29,7 +29,7 @@ int main() {
   vector<item*> roomItems;
   vector<int> inventory;
   int thisRoom = 0;
-  createRooms(&rooms, &roomItems, inventory);
+  createRooms(&rooms, &roomItems, &inventory);
 	printWelcome();
 	char input[10];
 
