@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstring>
 
-#infdef ITEM_H
+#ifndef ITEM_H
 #define ITEM_H
 
 using namespace std;
@@ -10,8 +10,11 @@ class item {
  public: 
   item();
   char* getItemType();
+  int getItemID();
+  int setItemID();
  private:
   char itemType[50];
+  int itemID;
 };
 
 #endif

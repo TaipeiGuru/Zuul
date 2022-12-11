@@ -14,19 +14,19 @@ public:
   room();
   map<char*, room*>* getRoomExits();
   char* showDescription();
-  void retrieveItems();
+  void retrieveItems(item* myItem);
   void listItems();
-  void dropItems();
+  void dropItems(item* myItem);
   vector<item*>* getRoomItems();
   void listExits();
   room* getRoomByDirection(char* direction);
-  int setRoom();
+  void setRoom(int roomNum);
   int getRoom();
 private:
   int thisRoom;
   char description[300];
   vector<item*> roomItems;
-  map<char*, room*>* roomExits;
+  map<char*, room*> roomExits;
 };
 
 #endif

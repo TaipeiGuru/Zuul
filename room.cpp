@@ -14,7 +14,7 @@ room::room() {
 void room::listExits() {
   map<char*, room*>::iterator iter;
   for(iter = roomExits.begin(); iter != roomExits.end(); iter++) {
-    cout << it->first << endl; 
+    cout << iter->first << endl; 
   }
 } 
 
@@ -51,17 +51,17 @@ void room::retrieveItems(item* myItem) {
   }
 }
 
-Room* room::getRoomByDirection(char* direction) {
+room* room::getRoomByDirection(char* direction) {
   map<char*, room*>::iterator iter;
   for(iter = roomExits.begin(); iter != roomExits.end(); iter++) {
     if(strcmp(iter->first, direction) == 0) {
-      return it->second; 
+      return iter->second; 
     }
   }
   return this;
 }
 
-void setRoom(int roomNum) {
+void room::setRoom(int roomNum) {
   thisRoom = roomNum; 
 }
 
