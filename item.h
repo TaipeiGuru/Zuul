@@ -11,7 +11,7 @@ class item {
   item();
   char* getItemType();
   int getItemID();
-  void setItemID();
+  void setItemID(int id);
  private:
   char itemType[50];
   int itemID;
