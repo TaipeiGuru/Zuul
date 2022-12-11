@@ -295,7 +295,7 @@ void getItems(vector<int>* inventory, vector<room*>* rooms, vector<item*>* roomI
   vector<item*>::iterator itemIter;
   
   for(roomIter = rooms->begin(); roomIter != rooms->end(); roomIter++) {
-    if(strcmp(thisRoom, (*roomIter)->getRoom()) == 0) {
+    if(strcmp(thisRoom, roomIter->getRoom()) == 0) {
       cout << "Which item would you like to pick up?" << endl;
       cin >> input;
 		  cin.clear();
@@ -314,7 +314,7 @@ void getItems(vector<int>* inventory, vector<room*>* rooms, vector<item*>* roomI
 void dropItems(vector<int>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom) {
   char input[15];
   vector<int>::iterator invIter;
-  map<room*>::iterator roomIter;
+  map<char*, room*>::iterator roomIter;
   vector<item*>::iterator itemIter;
   
   cout << "Items in your inventory:" << endl;
