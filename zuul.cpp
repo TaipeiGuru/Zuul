@@ -29,7 +29,7 @@ int main() {
   vector<item*> roomItems;
   vector<int> inventory;
   int thisRoom = 0;
-  createRooms(rooms, roomItems, inventory);
+  createRooms(&rooms, roomItems, inventory);
 	printWelcome();
 	char input[10];
 
@@ -46,8 +46,8 @@ int main() {
 			cout << "Which direction do you want to go? Your options are:" << endl;
 			vector<room*>::iterator roomIter;
 			for(roomIter = rooms.begin(); roomIter != rooms.end(); roomIter++) {
-			  if(roomIter->getRoom() == thisRoom) {
-			    roomIter->listExits();
+			  if((*roomIter)->getRoom() == thisRoom) {
+			    (*roomIter)->listExits();
 			  }
 			}
 			cin >> input;
@@ -60,9 +60,9 @@ int main() {
 		} else if (strcmp(input, "inventory") == 0) {
 			printInventory(inventory);
 		} else if (strcmp(input, "get") == 0) {
-      getItems(&inventory, rooms, roomItems, thisRoom);
+      getItems(&inventory, &rooms, &roomItems, thisRoom);
 		} else if (strcmp(input, "drop") == 0) {
-			dropItems(&inventory, rooms, roomItems, thisRoom);
+			dropItems(&inventory, &rooms, &roomItems, thisRoom);
 		}
     if(thisRoom == 0) {
       if(inventory.size() == 5) {
