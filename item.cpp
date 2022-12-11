@@ -8,14 +8,14 @@ item::item() {
   
 }
 
-char* getItemType() {
+char* item::getItemType() {
   return itemType; 
 }
 
-int getItemID() {
+int item::getItemID() {
   return itemID; 
 }
 
-void setItemID(int id) {
+void item::setItemID(int id) {
   itemID = id;
 }
