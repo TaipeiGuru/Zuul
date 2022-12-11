@@ -45,7 +45,7 @@ int main() {
 		if (strcmp(input, "go") == 0) {
 			cout << "Which direction do you want to go? Your options are:" << endl;
 			vector<room*>::iterator roomIter;
-			for(roomIter = rooms.begin(); roomIter != rooms.end(); roomIter++) {
+			for(roomIter = rooms->begin(); roomIter != rooms->end(); roomIter++) {
 			  if(roomIter->getRoom() == thisRoom) {
 			    roomIter->listExits();
 			  }
@@ -67,7 +67,7 @@ int main() {
     if(thisRoom == 0) {
       if(inventory.size() == 5) {
         vector<int>::iterator iter;
-        for(iter = inventory.begin(); iter != inventory.end(); iter++) {
+        for(iter = inventory->begin(); iter != inventory->end(); iter++) {
           if(strcmp(iter->getItemType(), "PetDuckling") != 0) {
             if(strcmp(iter->getItemType(), "Keystone") != 0) {
               cout << "Congratulations, you won!" << endl;
@@ -93,7 +93,7 @@ int goRoom(vector<room*>* rooms, char* direction, int thisRoom) {
       cout << "You are now " << (*iter)->showDescription() << endl;
       cout << "Items in the room: " << endl;
       cout << (*iter)->listItems() << endl;
-      room newRoom = (*iter)->getRoomByDirection(direction);
+      room* newRoom = (*iter)->getRoomByDirection(direction);
       return newRoom->getRoom();
     }
   }
@@ -243,11 +243,11 @@ void createRooms(vector<room*>* rooms, vector<item*>* roomItems, vector<char*>* 
   
   item* Keystone = new item();
   strcpy(Keystone->getItemType(), "Keystone");
-  inventory.push_back(Keystone);
+  inventory->push_back(Keystone);
 
   item* PetDuckling = new item();
   strcpy(PetDuckling->getItemType(), "PetDuckling");
-	inventory.push_back(PetDuckling);
+	inventory->push_back(PetDuckling);
 }
 
 /**
@@ -263,7 +263,6 @@ void printWelcome() {
 	cout << "If you leave with the keystone, the castle will crumble to ruins. If you leave with the duckling, the king will become furious and have you killed." << endl;
 	cout << "\nType 'help' if you need help." << endl;
 	cout << endl;
-	cout << currentRoom.getLongDescription() << endl;
 }
 
 // Print inventory method
@@ -271,11 +270,11 @@ void printInventory(vector<char*>* inventory) {
   
   vector<char*>::iterator iter;
   
-  if(inventory.size() == 0){
+  if(inventory->size() == 0){
     cout << "You aren't carrying anything." << endl;
   } else {
     cout << "You are carrying: " << endl;
-    for (iter = inventory.begin(); iter != inventory.end(); iter++) {
+    for (iter = inventory->begin(); iter != inventory->end(); iter++) {
 		  cout << (*iter)->getItemType() << endl;
 		}
   }
@@ -288,13 +287,13 @@ void getItems(vector<int>* inventory, vector<room*>* rooms, vector<item*>* roomI
   map<room*>::iterator roomIter;
   vector<item*>::iterator itemIter;
   
-  for(roomIter = rooms.begin(); roomIter != rooms.end(); roomIter++) {
+  for(roomIter = rooms->begin(); roomIter != rooms->end(); roomIter++) {
     if(strcmp(thisRoom, (*roomIter)->getRoom()) == 0) {
       cout << "Which item would you like to pick up?" << endl;
       cin >> input;
 		  cin.clear();
 		  cin.ignore(10000, '\n');
-      for(itemIter = roomItems.begin(); itemIter != roomItems.end(); itemIter++) {
+      for(itemIter = roomItems->begin(); itemIter != roomItems->end(); itemIter++) {
         if(strcmp(input, (*itemIter)->getItemType()) == 0) {
           inventory->push_back((*item)->getItemID());
           *item = roomItems->erase(*item);
@@ -312,7 +311,7 @@ void dropItems(vector<char*>* inventory, vector<room*>* rooms, vector<item*>* ro
   vector<item*>::iterator itemIter;
   
   cout << "Items in your inventory:" << endl;
-  for(invIter = inventory.begin(); invIter != inventory.end(); invIter++) {
+  for(invIter = inventory->begin(); invIter != inventory->end(); invIter++) {
    cout << (*invIter)->getItemType(); 
   }
   
@@ -321,9 +320,9 @@ void dropItems(vector<char*>* inventory, vector<room*>* rooms, vector<item*>* ro
 	cin.clear();
 	cin.ignore(10000, '\n');
   
-  for(roomIter = rooms.begin(); roomIter != rooms.end(); roomIter++) {
+  for(roomIter = rooms->begin(); roomIter != rooms->end(); roomIter++) {
     if(strcmp(thisRoom, (*roomIter)->getRoom()) == 0) {
-      for(itemIter = roomItems.begin(); itemIter != roomItems.end(); itemIter++) {
+      for(itemIter = roomItems->begin(); itemIter != roomItems->end(); itemIter++) {
         if(strcmp(input, (*itemIter)->getItemType()) == 0) {
           (*roomIter)->dropItems(*itemIter);
           inventory->erase(*item);
