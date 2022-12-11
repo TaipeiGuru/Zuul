@@ -29,7 +29,7 @@ int main() {
   vector<item*> roomItems;
   vector<int> inventory;
   int thisRoom = 0;
-  createRooms(&rooms, roomItems, inventory);
+  createRooms(&rooms, &roomItems, inventory);
 	printWelcome();
 	char input[10];
 
@@ -328,7 +328,7 @@ void dropItems(vector<int>* inventory, vector<room*>* rooms, vector<item*>* room
 	cin.ignore(10000, '\n');
   
   for(roomIter = rooms->begin(); roomIter != rooms->end(); roomIter++) {
-    if(strcmp(thisRoom, (*roomIter)->getRoom()) == 0) {
+    if(strcmp(thisRoom, roomIter->getRoom()) == 0) {
       for(itemIter = roomItems->begin(); itemIter != roomItems->end(); itemIter++) {
         if(strcmp(input, (*itemIter)->getItemType()) == 0) {
           (*roomIter)->dropItems(*itemIter);
