@@ -12,7 +12,7 @@ using namespace std;
 class room {
 public:
   room();
-  map<char*, room*>* getRoomExits();
+  map<const char*, room*>* getRoomExits();
   char* showDescription();
   void retrieveItems(item* myItem);
   void listItems();
@@ -26,7 +26,7 @@ private:
   int thisRoom;
   char description[300];
   vector<item*> roomItems;
-  map<char*, room*> roomExits;
+  map<const char*, room*> roomExits;
 };
 
 #endif
