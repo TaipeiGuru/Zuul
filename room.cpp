@@ -8,7 +8,7 @@
 using namespace std;
 
 room::room() {
-  
+  roomItems = new vector<item*>();
 }
 
 void room::listExits() {
@@ -28,24 +28,28 @@ char* room::showDescription() {
 
 void room::listItems() {
   vector<item*>::iterator iter;
-  for(iter = roomItems.begin(); iter != roomItems.end(); iter++) {
-    cout << (*iter)->getItemType() << endl;
+  if(roomItems->size() == 0) {
+    cout << "No items in this room." << endl;
+  } else {
+    for(iter = roomItems->begin(); iter != roomItems->end(); iter++) {
+      cout << (*iter)->getItemType() << endl;
+    }
   }
 }
 
-vector <item*>* room::getRoomItems() {
-  return &roomItems; 
+vector<item*>* room::getRoomItems() {
+  return roomItems; 
 }
 
 void room::dropItems(item* myItem) {
-  roomItems.push_back(myItem);
+  roomItems->push_back(myItem);
 }
 
 void room::retrieveItems(item* myItem) {
   vector<item*>::iterator iter;
-  for(iter = roomItems.begin(); iter != roomItems.end(); iter++) {
+  for(iter = roomItems->begin(); iter != roomItems->end(); iter++) {
     if(strcmp((*iter)->getItemType(), myItem->getItemType()) == 0) {
-      roomItems.erase(iter);
+      roomItems->erase(iter);
       return;
     }
   }

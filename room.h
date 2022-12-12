@@ -25,7 +25,7 @@ public:
 private:
   int thisRoom;
   char description[300];
-  vector<item*> roomItems;
+  vector<item*>* roomItems;
   map<const char*, room*> roomExits;
 };
 
