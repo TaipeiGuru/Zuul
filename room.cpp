@@ -12,13 +12,13 @@ room::room() {
 }
 
 void room::listExits() {
-  map<char*, room*>::iterator iter;
+  map<const char*, room*>::iterator iter;
   for(iter = roomExits.begin(); iter != roomExits.end(); iter++) {
     cout << iter->first << endl; 
   }
 } 
 
-map<char*, room*>* room::getRoomExits() {
+map<const char*, room*>* room::getRoomExits() {
   return &roomExits; 
 }
 
