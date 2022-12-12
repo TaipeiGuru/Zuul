@@ -15,7 +15,7 @@
 void createRooms(vector<room*>* rooms, vector<item*>* roomItems, vector<item*>* inventory);
 int goRoom(vector<room*>* rooms, char* direction, int thisRoom);
 void printWelcome();
-void printInventory(vector<item*> inventory);
+void printInventory(vector<item*>* inventory);
 void getItems(vector<item*>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom);
 void dropItems(vector<item*>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom);
 
