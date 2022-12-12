@@ -14,7 +14,7 @@ room::room() {
 void room::listExits() {
   map<const char*, room*>::iterator iter;
   for(iter = roomExits.begin(); iter != roomExits.end(); iter++) {
-    cout << (*iter)->first << endl; 
+    cout << iter->first << endl; 
   }
 } 
 
@@ -29,7 +29,7 @@ char* room::showDescription() {
 void room::listItems() {
   vector<item*>::iterator iter;
   for(iter = roomItems.begin(); iter != roomItems.end(); iter++) {
-    cout << (*iter)->getItemType() << endl; 
+    cout << (*iter)->getItemType() << endl;
   }
 }
 

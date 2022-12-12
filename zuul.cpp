@@ -28,7 +28,7 @@ int main() {
   vector<room*> rooms;
   vector<item*> roomItems;
   vector<item*> inventory;
-  int thisRoom = 0;
+  int thisRoom = 1;
   createRooms(&rooms, &roomItems, &inventory);
 	printWelcome();
 	char input[10];
@@ -53,7 +53,11 @@ int main() {
 			cin >> input;
 			cin.clear();
 			cin.ignore(10000, '\n');
-			thisRoom = goRoom(&rooms, input, thisRoom);
+			if(goRoom(&rooms, input, thisRoom) == -1) {
+			  cout << "That's not a valid room." << endl;
+			} else {
+			  thisRoom = goRoom(&rooms, input, thisRoom);
+			}
 		} else if (strcmp(input, "quit") == 0) {
 			cout << "Thank you for playing. Good bye." << endl;
 			finished = true;
@@ -95,6 +99,7 @@ int goRoom(vector<room*>* rooms, char* direction, int thisRoom) {
       (*iter)->listItems();
       room* newRoom = (*iter)->getRoomByDirection(direction);
       delete direction;
+      cout << "hi" << endl;
       return newRoom->getRoom();
     }
   }
