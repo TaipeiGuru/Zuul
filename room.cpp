@@ -14,7 +14,7 @@ room::room() {
 void room::listExits() {
   map<const char*, room*>::iterator iter;
   for(iter = roomExits.begin(); iter != roomExits.end(); iter++) {
-    cout << iter->first << endl; 
+    cout << (*iter)->first << endl; 
   }
 } 
 
