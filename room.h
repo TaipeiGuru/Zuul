@@ -19,7 +19,7 @@ public:
   void dropItems(item* myItem);
   vector<item*>* getRoomItems();
   void listExits();
-  room* getRoomByDirection(char* direction);
+  room* getRoomByDirection(const char* direction);
   void setRoom(int roomNum);
   int getRoom();
 private:
