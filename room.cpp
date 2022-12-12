@@ -51,8 +51,8 @@ void room::retrieveItems(item* myItem) {
   }
 }
 
-room* room::getRoomByDirection(char* direction) {
-  map<char*, room*>::iterator iter;
+room* room::getRoomByDirection(const char* direction) {
+  map<const char*, room*>::iterator iter;
   for(iter = roomExits.begin(); iter != roomExits.end(); iter++) {
     if(strcmp(iter->first, direction) == 0) {
       return iter->second; 
