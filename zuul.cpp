@@ -12,12 +12,12 @@
  * by Michael Kolling and David J. Barnes, and was modified by Jason Randolph. Last edits were 
  * made 12/2/22. */
 
-void createRooms(vector<room*>* rooms, vector<item*>* roomItems, vector<int>* inventory);
+void createRooms(vector<room*>* rooms, vector<item*>* roomItems, vector<item*>* inventory);
 int goRoom(vector<room*>* rooms, char* direction, int thisRoom);
 void printWelcome();
-void printInventory(vector<int> inventory);
-void getItems(vector<int>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom);
-void dropItems(vector<int>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom);
+void printInventory(vector<item*> inventory);
+void getItems(vector<item*>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom);
+void dropItems(vector<item*>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom);
 
 /*
 * Create the game and initialise its internal map.
@@ -27,7 +27,7 @@ void dropItems(vector<int>* inventory, vector<room*>* rooms, vector<item*>* room
 int main() {
   vector<room*> rooms;
   vector<item*> roomItems;
-  vector<int> inventory;
+  vector<item*> inventory;
   int thisRoom = 0;
   createRooms(&rooms, &roomItems, &inventory);
 	printWelcome();
@@ -66,7 +66,7 @@ int main() {
 		}
     if(thisRoom == 0) {
       if(inventory.size() == 5) {
-        vector<int>::iterator iter;
+        vector<item*>::iterator iter;
         for(iter = inventory.begin(); iter != inventory.end(); iter++) {
           if(strcmp(iter->getItemType(), "PetDuckling") != 0) {
             if(strcmp(iter->getItemType(), "Keystone") != 0) {
@@ -101,7 +101,7 @@ int goRoom(vector<room*>* rooms, char* direction, int thisRoom) {
 }
 
 // Create all the rooms and link their exits together.
-void createRooms(vector<room*>* rooms, vector<item*>* roomItems, vector<char*>* inventory) {
+void createRooms(vector<room*>* rooms, vector<item*>* roomItems, vector<item*>* inventory) {
 	
 	// create the rooms and their descriptions 
 	room* Outside = new room();
@@ -221,40 +221,33 @@ void createRooms(vector<room*>* rooms, vector<item*>* roomItems, vector<char*>* 
 	// Initializing and assigning items to rooms
 	item* MagicSpyglass = new item();
   strcpy(MagicSpyglass->getItemType(), "MagicSpyglass");
-  MagicSpyglass->setItemID(1);
 	Watchtower->dropItems(MagicSpyglass);
 
 	item* MagicRose = new item();
   strcpy(MagicRose->getItemType(), "MagicRose");
-  MagicRose->setItemID(2);
 	Courtyard->dropItems(MagicRose);
 	
 	item* MagicCrystalBall = new item();
   strcpy(MagicCrystalBall->getItemType(), "MagicCrystalBall");
-  MagicCrystalBall->setItemID(3);
 	Parlor->dropItems(MagicCrystalBall);
 	
 	item* MagicCrown = new item();
   strcpy(MagicCrown->getItemType(), "MagicCrown");
-  MagicCrown->setItemID(4);
 	RoyalHall->dropItems(MagicCrown);
 	
 	item* MagicScepter = new item();
   strcpy(MagicScepter->getItemType(), "MagicScepter");
-  MagicScepter->setItemID(5);
 	SecretPassage->dropItems(MagicScepter);
 
 	// adding items to the player's inventory to begin the game 
   
   item* Keystone = new item();
   strcpy(Keystone->getItemType(), "Keystone");
-  Keystone->setItemID(6);
-  inventory->push_back(Keystone->getItemID());
+  inventory->push_back(Keystone);
 
   item* PetDuckling = new item();
   strcpy(PetDuckling->getItemType(), "PetDuckling");
-  PetDuckling->setItemID(7);
-	inventory->push_back(PetDuckling->getItemID());
+	inventory->push_back(PetDuckling);
 }
 
 /**
@@ -273,9 +266,9 @@ void printWelcome() {
 }
 
 // Print inventory method
-void printInventory(vector<char*>* inventory) {
+void printInventory(vector<item*>* inventory) {
   
-  vector<char*>::iterator iter;
+  vector<item*>::iterator iter;
   
   if(inventory->size() == 0){
     cout << "You aren't carrying anything." << endl;
@@ -289,9 +282,9 @@ void printInventory(vector<char*>* inventory) {
 
 
 // Method for picking up items 
-void getItems(vector<int>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom) {
+void getItems(vector<item*>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom) {
   char input[15];
-  map<char*, room*>::iterator roomIter;
+  vector<room*>::iterator roomIter;
   vector<item*>::iterator itemIter;
   
   for(roomIter = rooms->begin(); roomIter != rooms->end(); roomIter++) {
@@ -302,8 +295,8 @@ void getItems(vector<int>* inventory, vector<room*>* rooms, vector<item*>* roomI
 		  cin.ignore(10000, '\n');
       for(itemIter = roomItems->begin(); itemIter != roomItems->end(); itemIter++) {
         if(strcmp(input, (*itemIter)->getItemType()) == 0) {
-          inventory->push_back((*item)->getItemID());
-          *item = roomItems->erase(*item);
+          inventory->push_back(*itemIter);
+          *item = roomItems->erase(*itemIter);
         }
       }
       cout << "The " << input << " has been picked up!" << endl;
@@ -311,10 +304,10 @@ void getItems(vector<int>* inventory, vector<room*>* rooms, vector<item*>* roomI
   }
 }
 
-void dropItems(vector<int>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom) {
+void dropItems(vector<item*>* inventory, vector<room*>* rooms, vector<item*>* roomItems, int thisRoom) {
   char input[15];
-  vector<int>::iterator invIter;
-  map<char*, room*>::iterator roomIter;
+  vector<item*>::iterator invIter;
+  vector<room*>::iterator roomIter;
   vector<item*>::iterator itemIter;
   
   cout << "Items in your inventory:" << endl;
