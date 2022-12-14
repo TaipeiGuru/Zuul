@@ -18,6 +18,7 @@ void printWelcome();
 void printInventory(vector<item*>* inventory);
 void getItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom);
 void dropItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom);
+void printHelp();
 
 /*
 * Create the game and initialise its internal map.
@@ -29,10 +30,22 @@ int main() {
   vector<item*> inventory;
   int thisRoom = 1;
   int tempThisRoom;
+  int winCounter = 0;
+  char input[10];
+  
   createRooms(&rooms, &inventory);
   printWelcome();
-  char input[10];
 
+  vector<room*>::iterator startingIter;
+  for(startingIter = rooms.begin(); startingIter != rooms.end(); startingIter++) {
+    if(thisRoom == (*startingIter)->getRoom()) {
+      cout << "You are now " << (*startingIter)->showDescription() << endl;
+      cout << "Items in the room: " << endl;
+      (*startingIter)->listItems();
+    }
+  }
+  cout << endl;
+  
   // Enter the main command loop.  Here we repeatedly read commands and
   // execute them until the game is over.
 
@@ -68,15 +81,16 @@ int main() {
       getItems(&inventory, &rooms, thisRoom);
     } else if (strcmp(input, "drop") == 0) {
       dropItems(&inventory, &rooms, thisRoom);
+    } else if(strcmp(input, "help") == 0) {
+      printHelp();
     }
-    if(thisRoom == 0) {
+    if(thisRoom == 1) {
       if(inventory.size() == 5) {
 	vector<item*>::iterator iter;
 	for(iter = inventory.begin(); iter != inventory.end(); iter++) {
 	  if(strcmp((*iter)->getItemType(), "PetDuckling") != 0) {
 	    if(strcmp((*iter)->getItemType(), "Keystone") != 0) {
-	      cout << "Congratulations, you won!" << endl;
-	      finished = true;
+	      winCounter++;
 	    } else {
 	      cout << "Uh oh....you went outside with the keystone. Game over - the castle is now collapsing on you..." << endl;
 	      finished = true;
@@ -85,7 +99,11 @@ int main() {
 	    cout << "Uh oh....you went outside with the king's pet duckling. Game over - prepare to die..." << endl;
 	    finished = true;
 	  }
-	} 
+	}
+	if(winCounter == 2) {
+	  cout << "Congratulations, you won!" << endl;
+	  finished = true;
+	}
       }  
     }
   }
@@ -259,7 +277,7 @@ void createRooms(vector<room*>* rooms, vector<item*>* inventory) {
 void printWelcome() {
   cout << endl; 
   cout << "Welcome to Adventure!" << endl;
-  cout << "This is a castle with 15 rooms (26 if you include outside). Each room connects to at least one other room." << endl;
+  cout << "This is a castle with 15 rooms (16 if you include outside). Each room connects to at least one other room." << endl;
   cout << "There are also 5 magic items spread throughout the castle." << endl;
   cout << "To win, you must have all 5 magic items in your inventory and then go outside." << endl;
   cout << "\nWarning: don't leave with the castle's keystone or the king's pet duckling!" << endl;
@@ -274,12 +292,13 @@ void printInventory(vector<item*>* inventory) {
   vector<item*>::iterator iter;
   
   if(inventory->size() == 0){
-    cout << "You aren't carrying anything." << endl;
+    cout << "\nYou aren't carrying anything.\n" << endl;
   } else {
-    cout << "You are carrying: " << endl;
+    cout << "\nYou are carrying: " << endl;
     for (iter = inventory->begin(); iter != inventory->end(); iter++) {
       cout << (*iter)->getItemType() << endl;
     }
+    cout << endl;
   }
 }
 
@@ -300,8 +319,32 @@ void getItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom) {
       for(itemIter = roomItems->begin(); itemIter != roomItems->end(); itemIter++) {
         if(strcmp(input, (*itemIter)->getItemType()) == 0) {
           inventory->push_back(*itemIter);
-          roomItems->erase(itemIter);
-	  cout << roomItems->size();
+	  roomItems->erase(itemIter);
+	  break;
+        }
+      }
+      cout << "The " << input << " has been picked up!" << endl;
+    }
+  }
+}
+
+void dropItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom) {
+  char input[15];
+  vector<room*>::iterator roomIter;
+  vector<item*>::iterator itemIter;
+  
+  for(roomIter = rooms->begin(); roomIter != rooms->end(); roomIter++) {
+    if(thisRoom == (*roomIter)->getRoom()) {
+      vector<item*>* roomItems = (*roomIter)->getRoomItems();
+      cout << "Which item would you like to drop?" << endl;
+      cin >> input;
+      cin.clear();
+      cin.ignore(10000, '\n');
+      for(itemIter = roomItems->begin(); itemIter != roomItems->end(); itemIter++) {
+        if(strcmp(input, (*itemIter)->getItemType()) == 0) {
+          inventory->push_back(*itemIter);
+	  roomItems->erase(itemIter);
+	  break;
         }
       }
       cout << "The " << input << " has been picked up!" << endl;
@@ -340,3 +383,13 @@ void dropItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom) {
   }
 }
 
+void printHelp() {
+  cout << endl;
+  cout << "You have six commands: \"go\", \"quit\", \"inventory\", \"get\", \"drop\", and \"help\"." << endl;
+  cout << "Go allows you to move to another direction. It'll give you a list of directions, from which you should pick one." << endl;
+  cout << "Quit allows you to stop playing." << endl;
+  cout << "Inventory allows you to see what items are in your inventory." << endl;
+  cout << "Get allows you to pick up an item from a room and add it to your inventory." << endl;
+  cout << "Drop allows you to remove an item from your inventory and put it in the room." << endl;
+  cout << endl;
+}
