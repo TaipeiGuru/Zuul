@@ -336,18 +336,22 @@ void dropItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom) {
   for(roomIter = rooms->begin(); roomIter != rooms->end(); roomIter++) {
     if(thisRoom == (*roomIter)->getRoom()) {
       vector<item*>* roomItems = (*roomIter)->getRoomItems();
-      cout << "Which item would you like to drop?" << endl;
-      cin >> input;
-      cin.clear();
-      cin.ignore(10000, '\n');
-      for(itemIter = roomItems->begin(); itemIter != roomItems->end(); itemIter++) {
-        if(strcmp(input, (*itemIter)->getItemType()) == 0) {
-          inventory->push_back(*itemIter);
-	  roomItems->erase(itemIter);
-	  break;
+	    if(roomItems->size() != 0){
+        cout << "\nWhich item would you like to drop?" << endl;
+        cin >> input;
+        cin.clear();
+        cin.ignore(10000, '\n');
+        for(itemIter = roomItems->begin(); itemIter != roomItems->end(); itemIter++) {
+          if(strcmp(input, (*itemIter)->getItemType()) == 0) {
+            inventory->push_back(*itemIter);
+	          roomItems->erase(itemIter);
+	          break;
+          }
         }
+        cout << "The " << input << " has been dropped!" << endl;
+      } else {
+        cout << "There are no items in this room." << endl;
       }
-      cout << "The " << input << " has been picked up!" << endl;
     }
   }
 }
