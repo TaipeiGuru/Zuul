@@ -212,6 +212,7 @@ void createRooms(vector<room*>* rooms, vector<item*>* inventory) {
   
   strcpy(Chapel->showDescription(), "in the Chapel, the religious center of the castle (also hosts knighting ceremonies");
   Chapel->getRoomExits()->insert(pair<const char*, room*>("west", SouthCorridor));
+	Chapel->getRoomExits()->insert(pair<const char*, room*>("east", LivingQuarters));
   Chapel->getRoomExits()->insert(pair<const char*, room*>("south", Watchtower));
   Chapel->setRoom(7);
   rooms->push_back(Chapel);
