@@ -1,3 +1,4 @@
+// Imports
 #include <iostream>
 #include <cstring>
 #include <vector>
@@ -9,9 +10,10 @@
 
 /* This is the game of Zuul, a text-based adventure game that focuses on the user finding
  * certain items in the rooms of a castle and making it out safely. It was initially created 
- * by Michael Kolling and David J. Barnes, and was modified by Jason Randolph. Last edits were 
- * made 12/2/22. */
+ * by Michael Kolling and David J. Barnes, and was modified for C++ by Jason Randolph. Last edits were 
+ * made 12/16/22. */
 
+// Function declarations
 void createRooms(vector<room*>* rooms, vector<item*>* inventory);
 int goRoom(vector<room*>* rooms, vector<item*>* inventory, char* direction, int thisRoom);
 void printWelcome();
@@ -21,21 +23,22 @@ void dropItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom);
 void printHelp();
 int checkWin(vector<item*>* inventory);
 
-/*
-* Create the game and initialise its internal map.
-*/
-
 // Main method
 int main() {
-  vector<room*> rooms;
+  // Initializing variables
+	vector<room*> rooms;
   vector<item*> inventory;
+  // thisRoom is an integer thta's used to keep track of the current room
   int thisRoom = 1;
   int tempThisRoom;
   char input[10];
   
+  // Create the room and map
   createRooms(&rooms, &inventory);
+  // Print welcome message
   printWelcome();
 
+  // Cycle through the room pointer vector and locate the current room. It then provides the room name, description, and items
   vector<room*>::iterator startingIter;
   for(startingIter = rooms.begin(); startingIter != rooms.end(); startingIter++) {
     if(thisRoom == (*startingIter)->getRoom()) {
@@ -46,71 +49,86 @@ int main() {
   }
   cout << endl;
   
-  // Enter the main command loop.  Here we repeatedly read commands and
-  // execute them until the game is over.
-
+  // Used boolean to keep game active
   bool finished = false;
   while (finished == false) {
     cout << "Your commands are \"go\", \"quit\", \"inventory\", \"get\", \"drop\", and \"help\"." << endl; 
     cin >> input;
     cin.clear();
     cin.ignore(10000, '\n');
+    
+    /* If the user inputs "go," it locates the current room and prints the exits for the user to choose from.
+     * Then, it'll call the goRoom function using the user input and set it to thisRoom. If goRoom returns 
+     * a certain integer that represents winning/losing/invalid input, the program will print something accordingly. */
     if (strcmp(input, "go") == 0) {
       cout << "\nWhich direction do you want to go? Your options are:" << endl;
       vector<room*>::iterator roomIter;
       for(roomIter = rooms.begin(); roomIter != rooms.end(); roomIter++) {
-	if((*roomIter)->getRoom() == thisRoom) {
-	  (*roomIter)->listExits();
-	}
+	      if((*roomIter)->getRoom() == thisRoom) {
+	        (*roomIter)->listExits();
+	      }
       }
       cin >> input;
       cin.clear();
       cin.ignore(10000, '\n');
       tempThisRoom = thisRoom;
       thisRoom = goRoom(&rooms, &inventory, input, thisRoom);
+      // Winning
       if(thisRoom == 0){
         cout << "\nCongratulations, you won!" << endl;
         finished = true;
+      // Invalid input. thisRoom is reassigned to its previous value using a temporary variable
       } else if(thisRoom == -1){
-	cout << "\nSorry, there's no room in that direction." << endl;
-	thisRoom = tempThisRoom;
+	      cout << "\nSorry, there's no room in that direction." << endl;
+	      thisRoom = tempThisRoom;
+      // Losing
       } else if(thisRoom == -2){
         cout << "\nUh oh....you went outside with the king's pet duckling. Game over - prepare to die..." << endl;
         finished = true;
+      // Losing pt. 2
       } else if(thisRoom == -3){
         cout << "\nUh oh....you went outside with the keystone. Game over - the castle is now collapsing on you..." << endl;
         finished = true;
       } 
+    // If input = quit, the while loop ends
     } else if (strcmp(input, "quit") == 0) {
       cout << "\nThank you for playing. Good bye." << endl;
       finished = true;
+    // Print inventory using memory location of inventory since printInventory requires a pointer parameter
     } else if (strcmp(input, "inventory") == 0) {
       printInventory(&inventory);
+    // Getting items from a room
     } else if (strcmp(input, "get") == 0) {
       getItems(&inventory, &rooms, thisRoom);
+    // Dropping items into a room
     } else if (strcmp(input, "drop") == 0) {
       dropItems(&inventory, &rooms, thisRoom);
+    // Print help screen
     } else if(strcmp(input, "help") == 0) {
       printHelp();
     }
   }
 }
 
+/* Check if the user has won. If the inventory size is 5 (meaning all 5 treasures have been obtained),
+ * a for loop checks to see if there are any restricted items. If not, the win counter increments by 1. 
+ * If winCounter = 2 (no restricted items), the function returns 0 which is the winning integer. Otherwise,
+ * it'll return a losing/invalid integer. */
 int checkWin(vector<item*>* inventory) {
   int winCounter = 0;
-  if(inventory->size() == 1) {
+  if(inventory->size() == 5) {
     vector<item*>::iterator iter;
     for(iter = inventory->begin(); iter != inventory->end(); iter++) {
       if(strcmp((*iter)->getItemType(), "PetDuckling") != 0) {
-	if(strcmp((*iter)->getItemType(), "Keystone") != 0) {
-	  winCounter++;
-	} else {
-	  return 2;
-	}
+	      if(strcmp((*iter)->getItemType(), "Keystone") != 0) {
+	        winCounter++;
+	      } else {
+	        return 2;
+	      }
       } else {
-	return 1;
+	      return 1;
       }
-    }
+    } 
     if(winCounter == 1) {
       return 0;
     }
@@ -118,7 +136,11 @@ int checkWin(vector<item*>* inventory) {
   return -100;
 }
 
-
+/* Function for moving between rooms. It locates the current room and creates a new room pointer, which is 
+ * set equal to the room pointer returned by getRoomByDirection. Then, if that new room's value is 1, it'll 
+ * check for a win since the user must be outside to win. If not, it shows the description of the new room 
+ * and prints the items inside it. Last, the function returns the value of the new room so that thisRoom 
+ * (in the main function) can be set equal to it. Help with pointer logic from Vatsal Parikh */
 int goRoom(vector<room*>* rooms, vector<item*>* inventory, char* direction, int thisRoom) {
   vector<room*>::iterator iter;
   for(iter = rooms->begin(); iter != rooms->end(); iter++) {
@@ -130,16 +152,17 @@ int goRoom(vector<room*>* rooms, vector<item*>* inventory, char* direction, int 
         } else if(checkWin(inventory) == 1) {
           return -2; 
         } else if(checkWin(inventory) == 2) {
-          return -3; 
+          return -3;
+        // If the user is outside but hasn't won, advise them and then list room description and items as normal
         } else if(checkWin(inventory) == -100) {
-	  cout << "\nYou haven't won yet. Make sure you have all 5 treasures and none of the restricted items." << endl;
-	  cout << "\nYou are now " << newRoom->showDescription() << endl;
-	  cout << "\nItems in the room: " << endl;
-	  newRoom->listItems();
-	  thisRoom = newRoom->getRoom();
-	  cout << endl;
-	  return newRoom->getRoom();
-	}
+	        cout << "\nYou haven't won yet. Make sure you have all 5 treasures and none of the restricted items." << endl;
+	        cout << "\nYou are now " << newRoom->showDescription() << endl;
+	        cout << "\nItems in the room: " << endl;
+	        newRoom->listItems();
+	        thisRoom = newRoom->getRoom();
+	        cout << endl;
+	        return newRoom->getRoom();
+	      }
       } else {
         cout << "\nYou are now " << newRoom->showDescription() << endl;
         cout << "\nItems in the room: " << endl;
@@ -153,9 +176,8 @@ int goRoom(vector<room*>* rooms, vector<item*>* inventory, char* direction, int 
   return -1;
 }
 
-// Create all the rooms and link their exits together.
+// Create all the rooms using room pointers and link their exits together using a map.
 void createRooms(vector<room*>* rooms, vector<item*>* inventory) {
-  // create the rooms and their descriptions 
   room* Outside = new room();
   room* EntryHall = new room();
   room* NorthCorridor = new room();
@@ -173,6 +195,9 @@ void createRooms(vector<room*>* rooms, vector<item*>* inventory) {
   room* Portico = new room();
   room* SecretPassage = new room();
 
+  /* strcpy used to set descriptions. insert(pair) used to set room exits and associated directions.
+   * setRoom used to set room value. The room is then inserted into the vector of room pointers. 
+   * This process is repeated for all rooms. Help with map logic from Vatsal Parikh */
   strcpy(Outside->showDescription(), "outside the entrance to the castle");
   Outside->getRoomExits()->insert(pair<const char*, room*>("east", EntryHall));
   Outside->setRoom(1);
@@ -271,7 +296,7 @@ void createRooms(vector<room*>* rooms, vector<item*>* inventory) {
   SecretPassage->setRoom(16);
   rooms->push_back(SecretPassage);
   
-  // Initializing and assigning items to rooms
+  // Initializing and assigning items to rooms. dropItems used to insert items into a room
   item* MagicSpyglass = new item();
   strcpy(MagicSpyglass->getItemType(), "MagicSpyglass");
   Watchtower->dropItems(MagicSpyglass);
@@ -293,7 +318,6 @@ void createRooms(vector<room*>* rooms, vector<item*>* inventory) {
   SecretPassage->dropItems(MagicScepter);
   
   // adding items to the player's inventory to begin the game 
-  
   item* Keystone = new item();
   strcpy(Keystone->getItemType(), "Keystone");
   inventory->push_back(Keystone);
@@ -316,7 +340,7 @@ void printWelcome() {
   cout << endl;
 }
 
-// Print inventory method
+// Print inventory method. If there's nothing in the inventory, advise the user. Otherwise, cycle through the inventory and print the name of each item.
 void printInventory(vector<item*>* inventory) {
   
   vector<item*>::iterator iter;
@@ -333,7 +357,11 @@ void printInventory(vector<item*>* inventory) {
 }
 
 
-// Method for picking up items 
+/* Method for picking up items. The first iterator cycles through the room pointer vector to get the 
+ * current room. Then, the items in that room are printed and the user is asked which one they'd like to 
+ * pick up. The second iterator cycles through the item vector of that room and if any items match the user's
+ * input, that item is pushed back into the inventory vector and erased from the item pointer vector of that room.
+ * Help with iterator/erase logic from Vatsal Parikh */
 void getItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom) {
   char input[15];
   int wrongItemCounter = 0;
@@ -344,8 +372,8 @@ void getItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom) {
     if(thisRoom == (*roomIter)->getRoom()) {
       vector<item*>* roomItems = (*roomIter)->getRoomItems();
       if(roomItems->size() != 0) {
-	cout << "\nItems in the room:" << endl;
-	(*roomIter)->listItems();
+	      cout << "\nItems in the room:" << endl;
+	      (*roomIter)->listItems();
         cout << "\nWhich item would you like to pick up?" << endl;
         cin >> input;
         cin.clear();
@@ -353,16 +381,20 @@ void getItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom) {
         for(itemIter = roomItems->begin(); itemIter != roomItems->end(); itemIter++) {
           if(strcmp(input, (*itemIter)->getItemType()) == 0) {
             inventory->push_back(*itemIter);
-	    roomItems->erase(itemIter);
-	    cout << "\nThe " << input << " has been picked up!\n" << endl;
-	    break;
+	          roomItems->erase(itemIter);
+	          cout << "\nThe " << input << " has been picked up!\n" << endl;
+	          break;
+          /* wrongItemCounter increments if the user's input doesn't match the item. If 
+           * the entire vector has been searched and there are no matches, the user is told
+           * that their input is invalid. wrongItemCounter != 0 is used to prevent errors
+           * when the inventory only consists of 1 item that gets removed above */
           } else {
-	    wrongItemCounter++;
-	  }
+	          wrongItemCounter++;
+	        }
         }
-	if(wrongItemCounter == roomItems->size() && wrongItemCounter != 0){
-	  cout << "\nThat is not a valid item.\n" << endl;
-	}
+	      if(wrongItemCounter == roomItems->size() && wrongItemCounter != 0){
+	        cout << "\nThat is not a valid item.\n" << endl;
+	      }
       } else {
         cout << "\nThere are no items in this room.\n" << endl; 
       }
@@ -370,6 +402,7 @@ void getItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom) {
   }
 }
 
+// Drop item function. Same logic as the getItem function except the item is dropped into the room and erased from the inventory.
 void dropItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom) {
   char input[15];
   int wrongItemCounter = 0;
@@ -379,25 +412,25 @@ void dropItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom) {
   for(roomIter = rooms->begin(); roomIter != rooms->end(); roomIter++) {
     if(thisRoom == (*roomIter)->getRoom()) {
       vector<item*>* roomItems = (*roomIter)->getRoomItems();
-      if(inventory->size() != 0){
-	printInventory(inventory);
-        cout << "Which item would you like to drop?" << endl;
-        cin >> input;
-        cin.clear();
-        cin.ignore(10000, '\n');
-        for(itemIter = inventory->begin(); itemIter != inventory->end(); itemIter++) {
-          if(strcmp(input, (*itemIter)->getItemType()) == 0) {
-            (*roomIter)->dropItems(*itemIter);
-            inventory->erase(itemIter);
-	    cout << "\nThe " << input << " has been dropped!\n" << endl;
-	    break;
-          } else {
-	    wrongItemCounter++;
-	    if(wrongItemCounter == inventory->size() && wrongItemCounter != 0){
-	      cout << "\nThat is not a valid item.\n" << endl;
-	    }
-	  }
-        }
+        if(inventory->size() != 0){
+	        printInventory(inventory);
+          cout << "Which item would you like to drop?" << endl;
+          cin >> input;
+          cin.clear();
+          cin.ignore(10000, '\n');
+          for(itemIter = inventory->begin(); itemIter != inventory->end(); itemIter++) {
+            if(strcmp(input, (*itemIter)->getItemType()) == 0) {
+              (*roomIter)->dropItems(*itemIter);
+              inventory->erase(itemIter);
+	            cout << "\nThe " << input << " has been dropped!\n" << endl;
+	            break;
+            } else {
+	            wrongItemCounter++;
+	            if(wrongItemCounter == inventory->size() && wrongItemCounter != 0){
+	              cout << "\nThat is not a valid item.\n" << endl;
+	            }
+	          }
+          }
       } else {
         cout << "\nThere are no items in your inventory.\n" << endl;
       }
@@ -405,6 +438,7 @@ void dropItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom) {
   }
 }
 
+// Print help function
 void printHelp() {
   cout << endl;
   cout << "You have six commands: \"go\", \"quit\", \"inventory\", \"get\", \"drop\", and \"help\"." << endl;
