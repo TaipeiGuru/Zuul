@@ -257,7 +257,7 @@ void createRooms(vector<room*>* rooms, vector<item*>* inventory) {
   strcpy(LivingQuarters->showDescription(), "in the Living Quarters, a place where the king and every other non-servant stays in the castle");
   LivingQuarters->getRoomExits()->insert(pair<const char*, room*>("north", Library));
   LivingQuarters->getRoomExits()->insert(pair<const char*, room*>("west", Chapel));
-  LivingQuarters->setRoom(4);
+  LivingQuarters->setRoom(14);
   rooms->push_back(LivingQuarters);
   
   strcpy(Portico->showDescription(), "on the Portico, which also serves as the back exit to the castle. What does that lever do?");
