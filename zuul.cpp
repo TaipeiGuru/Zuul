@@ -13,12 +13,13 @@
  * made 12/2/22. */
 
 void createRooms(vector<room*>* rooms, vector<item*>* inventory);
-int goRoom(vector<room*>* rooms, char* direction, int thisRoom);
+int goRoom(vector<room*>* rooms, vector<item*>* inventory, char* direction, int thisRoom);
 void printWelcome();
 void printInventory(vector<item*>* inventory);
 void getItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom);
 void dropItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom);
 void printHelp();
+bool checkWin(vector<item*>* inventory);
 
 /*
 * Create the game and initialise its internal map.
@@ -67,7 +68,7 @@ int main() {
       cin.clear();
       cin.ignore(10000, '\n');
       tempThisRoom = thisRoom;
-      thisRoom = goRoom(&rooms, input, thisRoom);
+      thisRoom = goRoom(&rooms, &inventory, input, thisRoom);
       if(thisRoom == -1){
 	cout << "Sorry, there's no room in that direction." << endl;
 	thisRoom = tempThisRoom;
@@ -84,7 +85,9 @@ int main() {
     } else if(strcmp(input, "help") == 0) {
       printHelp();
     }
-    if(thisRoom == 1) {
+}
+
+bool checkWin(vector<item*>* inventory) {
       if(inventory.size() == 1) {
 	vector<item*>::iterator iter;
 	for(iter = inventory.begin(); iter != inventory.end(); iter++) {
@@ -93,33 +96,36 @@ int main() {
 	      winCounter++;
 	    } else {
 	      cout << "Uh oh....you went outside with the keystone. Game over - the castle is now collapsing on you..." << endl;
-	      finished = true;
+	      return true;
 	    }
 	  } else {
 	    cout << "Uh oh....you went outside with the king's pet duckling. Game over - prepare to die..." << endl;
-	    finished = true;
+	    return true;
 	  }
 	}
 	if(winCounter == 1) {
 	  cout << "Congratulations, you won!" << endl;
-	  finished = true;
+	  return true;
 	}
       }  
     }
-  }
 }
 
-int goRoom(vector<room*>* rooms, char* direction, int thisRoom) {
+int goRoom(vector<room*>* rooms, vector<item*>* inventory, char* direction, int thisRoom) {
   vector<room*>::iterator iter;
   for(iter = rooms->begin(); iter != rooms->end(); iter++) {
     if(thisRoom == (*iter)->getRoom()) {
       room* newRoom = (*iter)->getRoomByDirection(direction);
-      cout << "\nYou are now " << newRoom->showDescription() << endl;
-      cout << "\nItems in the room: " << endl;
-      newRoom->listItems();
-      thisRoom = newRoom->getRoom();
-      cout << endl;
-      return newRoom->getRoom();
+      if(newRoom->getRoom() == 1) {
+        finished = checkWin(inventory);
+      } else {
+        cout << "\nYou are now " << newRoom->showDescription() << endl;
+        cout << "\nItems in the room: " << endl;
+        newRoom->listItems();
+        thisRoom = newRoom->getRoom();
+        cout << endl;
+        return newRoom->getRoom();
+      }
     }
   }
   return -1;
