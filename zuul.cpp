@@ -69,18 +69,18 @@ int main() {
       tempThisRoom = thisRoom;
       thisRoom = goRoom(&rooms, &inventory, input, thisRoom);
       if(thisRoom == 0){
-        cout << "Congratulations, you won!" << endl;
+        cout << "\nCongratulations, you won!" << endl;
         finished = true;
       } else if(thisRoom == -1){
-	cout << "Sorry, there's no room in that direction." << endl;
+	cout << "\nSorry, there's no room in that direction." << endl;
 	thisRoom = tempThisRoom;
       } else if(thisRoom == -2){
-        cout << "Uh oh....you went outside with the king's pet duckling. Game over - prepare to die..." << endl;
+        cout << "\nUh oh....you went outside with the king's pet duckling. Game over - prepare to die..." << endl;
         finished = true;
       } else if(thisRoom == -3){
-        cout << "Uh oh....you went outside with the keystone. Game over - the castle is now collapsing on you..." << endl;
+        cout << "\nUh oh....you went outside with the keystone. Game over - the castle is now collapsing on you..." << endl;
         finished = true;
-      }
+      } 
     } else if (strcmp(input, "quit") == 0) {
       cout << "\nThank you for playing. Good bye." << endl;
       finished = true;
@@ -93,29 +93,31 @@ int main() {
     } else if(strcmp(input, "help") == 0) {
       printHelp();
     }
+  }
 }
 
 int checkWin(vector<item*>* inventory) {
   int winCounter = 0;
-      if(inventory.size() == 1) {
-	vector<item*>::iterator iter;
-	for(iter = inventory.begin(); iter != inventory.end(); iter++) {
-	  if(strcmp((*iter)->getItemType(), "PetDuckling") != 0) {
-	    if(strcmp((*iter)->getItemType(), "Keystone") != 0) {
-	      winCounter++;
-	    } else {
-	      return 2;
-	    }
-	  } else {
-	    return 1;
-	  }
+  if(inventory->size() == 1) {
+    vector<item*>::iterator iter;
+    for(iter = inventory->begin(); iter != inventory->end(); iter++) {
+      if(strcmp((*iter)->getItemType(), "PetDuckling") != 0) {
+	if(strcmp((*iter)->getItemType(), "Keystone") != 0) {
+	  winCounter++;
+	} else {
+	  return 2;
 	}
-	if(winCounter == 1) {
-	  return 0;
-	}
-      }  
+      } else {
+	return 1;
+      }
     }
+    if(winCounter == 1) {
+      return 0;
+    }
+  }
+  return -100;
 }
+
 
 int goRoom(vector<room*>* rooms, vector<item*>* inventory, char* direction, int thisRoom) {
   vector<room*>::iterator iter;
@@ -129,7 +131,15 @@ int goRoom(vector<room*>* rooms, vector<item*>* inventory, char* direction, int 
           return -2; 
         } else if(checkWin(inventory) == 2) {
           return -3; 
-        }
+        } else if(checkWin(inventory) == -100) {
+	  cout << "\nYou haven't won yet. Make sure you have all 5 treasures and none of the restricted items." << endl;
+	  cout << "\nYou are now " << newRoom->showDescription() << endl;
+	  cout << "\nItems in the room: " << endl;
+	  newRoom->listItems();
+	  thisRoom = newRoom->getRoom();
+	  cout << endl;
+	  return newRoom->getRoom();
+	}
       } else {
         cout << "\nYou are now " << newRoom->showDescription() << endl;
         cout << "\nItems in the room: " << endl;
@@ -382,11 +392,11 @@ void dropItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom) {
 	    break;
           } else {
 	    wrongItemCounter++;
+	    if(wrongItemCounter == inventory->size() && wrongItemCounter != 0){
+	      cout << "\nThat is not a valid item.\n" << endl;
+	    }
 	  }
         }
-	if(wrongItemCounter == inventory->size() && wrongItemCounter != 0){
-	  cout << "\nThat is not a valid item.\n" << endl;
-	}
       } else {
         cout << "\nThere are no items in your inventory.\n" << endl;
       }
