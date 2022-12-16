@@ -64,9 +64,9 @@ int main() {
       cout << "\nWhich direction do you want to go? Your options are:" << endl;
       vector<room*>::iterator roomIter;
       for(roomIter = rooms.begin(); roomIter != rooms.end(); roomIter++) {
-	      if((*roomIter)->getRoom() == thisRoom) {
-	        (*roomIter)->listExits();
-	      }
+	if((*roomIter)->getRoom() == thisRoom) {
+	  (*roomIter)->listExits();
+	}
       }
       cin >> input;
       cin.clear();
@@ -79,8 +79,8 @@ int main() {
         finished = true;
       // Invalid input. thisRoom is reassigned to its previous value using a temporary variable
       } else if(thisRoom == -1){
-	      cout << "\nSorry, there's no room in that direction." << endl;
-	      thisRoom = tempThisRoom;
+	cout << "\nSorry, there's no room in that direction." << endl;
+	thisRoom = tempThisRoom;
       // Losing
       } else if(thisRoom == -2){
         cout << "\nUh oh....you went outside with the king's pet duckling. Game over - prepare to die..." << endl;
@@ -120,16 +120,16 @@ int checkWin(vector<item*>* inventory) {
     vector<item*>::iterator iter;
     for(iter = inventory->begin(); iter != inventory->end(); iter++) {
       if(strcmp((*iter)->getItemType(), "PetDuckling") != 0) {
-	      if(strcmp((*iter)->getItemType(), "Keystone") != 0) {
-	        winCounter++;
-	      } else {
-	        return 2;
-	      }
+	if(strcmp((*iter)->getItemType(), "Keystone") != 0) {
+	  winCounter++;
+	} else {
+	  return 2;
+	}
       } else {
-	      return 1;
+	return 1;
       }
     } 
-    if(winCounter == 1) {
+    if(winCounter == 5) {
       return 0;
     }
   }
@@ -148,21 +148,21 @@ int goRoom(vector<room*>* rooms, vector<item*>* inventory, char* direction, int 
       room* newRoom = (*iter)->getRoomByDirection(direction);
       if(newRoom->getRoom() == 1) {
         if(checkWin(inventory) == 0) {
-	        return 0;
+	  return 0;
         } else if(checkWin(inventory) == 1) {
           return -2; 
         } else if(checkWin(inventory) == 2) {
           return -3;
         // If the user is outside but hasn't won, advise them and then list room description and items as normal
         } else if(checkWin(inventory) == -100) {
-	        cout << "\nYou haven't won yet. Make sure you have all 5 treasures and none of the restricted items." << endl;
-	        cout << "\nYou are now " << newRoom->showDescription() << endl;
-	        cout << "\nItems in the room: " << endl;
-	        newRoom->listItems();
-	        thisRoom = newRoom->getRoom();
-	        cout << endl;
-	        return newRoom->getRoom();
-	      }
+	  cout << "\nYou haven't won yet. Make sure you have all 5 treasures and none of the restricted items." << endl;
+	  cout << "\nYou are now " << newRoom->showDescription() << endl;
+	  cout << "\nItems in the room: " << endl;
+	  newRoom->listItems();
+	  thisRoom = newRoom->getRoom();
+	  cout << endl;
+	  return newRoom->getRoom();
+	}
       } else {
         cout << "\nYou are now " << newRoom->showDescription() << endl;
         cout << "\nItems in the room: " << endl;
@@ -237,7 +237,7 @@ void createRooms(vector<room*>* rooms, vector<item*>* inventory) {
   
   strcpy(Chapel->showDescription(), "in the Chapel, the religious center of the castle (also hosts knighting ceremonies");
   Chapel->getRoomExits()->insert(pair<const char*, room*>("west", SouthCorridor));
-	Chapel->getRoomExits()->insert(pair<const char*, room*>("east", LivingQuarters));
+  Chapel->getRoomExits()->insert(pair<const char*, room*>("east", LivingQuarters));
   Chapel->getRoomExits()->insert(pair<const char*, room*>("south", Watchtower));
   Chapel->setRoom(7);
   rooms->push_back(Chapel);
@@ -372,8 +372,8 @@ void getItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom) {
     if(thisRoom == (*roomIter)->getRoom()) {
       vector<item*>* roomItems = (*roomIter)->getRoomItems();
       if(roomItems->size() != 0) {
-	      cout << "\nItems in the room:" << endl;
-	      (*roomIter)->listItems();
+	cout << "\nItems in the room:" << endl;
+	(*roomIter)->listItems();
         cout << "\nWhich item would you like to pick up?" << endl;
         cin >> input;
         cin.clear();
@@ -381,20 +381,20 @@ void getItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom) {
         for(itemIter = roomItems->begin(); itemIter != roomItems->end(); itemIter++) {
           if(strcmp(input, (*itemIter)->getItemType()) == 0) {
             inventory->push_back(*itemIter);
-	          roomItems->erase(itemIter);
-	          cout << "\nThe " << input << " has been picked up!\n" << endl;
-	          break;
+	    roomItems->erase(itemIter);
+	    cout << "\nThe " << input << " has been picked up!\n" << endl;
+	    break;
           /* wrongItemCounter increments if the user's input doesn't match the item. If 
            * the entire vector has been searched and there are no matches, the user is told
            * that their input is invalid. wrongItemCounter != 0 is used to prevent errors
            * when the inventory only consists of 1 item that gets removed above */
           } else {
-	          wrongItemCounter++;
-	        }
+	    wrongItemCounter++;
+	  }
         }
-	      if(wrongItemCounter == roomItems->size() && wrongItemCounter != 0){
-	        cout << "\nThat is not a valid item.\n" << endl;
-	      }
+	if(wrongItemCounter == roomItems->size() && wrongItemCounter != 0){
+	  cout << "\nThat is not a valid item.\n" << endl;
+	}
       } else {
         cout << "\nThere are no items in this room.\n" << endl; 
       }
@@ -412,27 +412,27 @@ void dropItems(vector<item*>* inventory, vector<room*>* rooms, int thisRoom) {
   for(roomIter = rooms->begin(); roomIter != rooms->end(); roomIter++) {
     if(thisRoom == (*roomIter)->getRoom()) {
       vector<item*>* roomItems = (*roomIter)->getRoomItems();
-        if(inventory->size() != 0){
-	        printInventory(inventory);
-          cout << "Which item would you like to drop?" << endl;
-          cin >> input;
-          cin.clear();
-          cin.ignore(10000, '\n');
-          for(itemIter = inventory->begin(); itemIter != inventory->end(); itemIter++) {
-            if(strcmp(input, (*itemIter)->getItemType()) == 0) {
-              (*roomIter)->dropItems(*itemIter);
-              inventory->erase(itemIter);
-	            cout << "\nThe " << input << " has been dropped!\n" << endl;
-	            break;
-            } else {
-	            wrongItemCounter++;
-	            if(wrongItemCounter == inventory->size() && wrongItemCounter != 0){
-	              cout << "\nThat is not a valid item.\n" << endl;
-	            }
-	          }
-          }
+      if(inventory->size() != 0){
+	printInventory(inventory);
+	cout << "Which item would you like to drop?" << endl;
+	cin >> input;
+	cin.clear();
+	cin.ignore(10000, '\n');
+	for(itemIter = inventory->begin(); itemIter != inventory->end(); itemIter++) {
+	  if(strcmp(input, (*itemIter)->getItemType()) == 0) {
+	    (*roomIter)->dropItems(*itemIter);
+	    inventory->erase(itemIter);
+	    cout << "\nThe " << input << " has been dropped!\n" << endl;
+	    break;
+	  } else {
+	    wrongItemCounter++;
+	    if(wrongItemCounter == inventory->size() && wrongItemCounter != 0){
+	      cout << "\nThat is not a valid item.\n" << endl;
+	    }
+	  }
+	}
       } else {
-        cout << "\nThere are no items in your inventory.\n" << endl;
+	cout << "\nThere are no items in your inventory.\n" << endl;
       }
     }
   }
