@@ -66,8 +66,8 @@ int main() {
       cin >> input;
       cin.clear();
       cin.ignore(10000, '\n');
-      thisRoom = goRoom(&rooms, input, thisRoom);
       tempThisRoom = thisRoom;
+      thisRoom = goRoom(&rooms, input, thisRoom);
       if(thisRoom == -1){
 	cout << "Sorry, there's no room in that direction." << endl;
 	thisRoom = tempThisRoom;
@@ -100,7 +100,7 @@ int main() {
 	    finished = true;
 	  }
 	}
-	if(winCounter == 2) {
+	if(winCounter == 1) {
 	  cout << "Congratulations, you won!" << endl;
 	  finished = true;
 	}
