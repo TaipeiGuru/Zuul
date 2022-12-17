@@ -28,7 +28,7 @@ int main() {
   // Initializing variables
 	vector<room*> rooms;
   vector<item*> inventory;
-  // thisRoom is an integer thta's used to keep track of the current room
+  // thisRoom is an integer that's used to keep track of the current room
   int thisRoom = 1;
   int tempThisRoom;
   char input[10];
