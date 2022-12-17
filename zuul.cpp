@@ -110,28 +110,25 @@ int main() {
   }
 }
 
-/* Check if the user has won. If the inventory size is 5 (meaning all 5 treasures have been obtained),
- * a for loop checks to see if there are any restricted items. If not, the win counter increments by 1. 
- * If winCounter = 2 (no restricted items), the function returns 0 which is the winning integer. Otherwise,
- * it'll return a losing/invalid integer. */
+/* Check if the user has won. A for loop checks to see if there are any restricted items. If not, the win counter increments by 1. 
+ * If winCounter = 5, all 5 treasures must be in the inventory and no restricted items. The function returns 0 which is the winning
+ * integer. Otherwise, it'll return a losing/invalid integer. */
 int checkWin(vector<item*>* inventory) {
   int winCounter = 0;
-  if(inventory->size() == 5) {
-    vector<item*>::iterator iter;
-    for(iter = inventory->begin(); iter != inventory->end(); iter++) {
-      if(strcmp((*iter)->getItemType(), "PetDuckling") != 0) {
-	if(strcmp((*iter)->getItemType(), "Keystone") != 0) {
-	  winCounter++;
-	} else {
-	  return 2;
-	}
+  vector<item*>::iterator iter;
+  for(iter = inventory->begin(); iter != inventory->end(); iter++) {
+    if(strcmp((*iter)->getItemType(), "PetDuckling") != 0) {
+      if(strcmp((*iter)->getItemType(), "Keystone") != 0) {
+	winCounter++;
       } else {
-	return 1;
+	return 2;
       }
-    } 
-    if(winCounter == 5) {
-      return 0;
+    } else {
+      return 1;
     }
+  } 
+  if(winCounter == 5) {
+    return 0;
   }
   return -100;
 }
