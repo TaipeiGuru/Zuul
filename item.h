@@ -1,3 +1,4 @@
+// Item class for Zuul
 #include <iostream>
 #include <cstring>
 
@@ -10,11 +11,9 @@ class item {
  public: 
   item();
   char* getItemType();
-  int getItemID();
-  void setItemID(int id);
  private:
+  // itemType serves as the item name, used when searching through item vectors
   char itemType[50];
-  int itemID;
 };
 
 #endif
